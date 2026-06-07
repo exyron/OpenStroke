@@ -426,11 +426,11 @@ class VentanaConfiguracion:
     • teclas:shift,win,left    (Mover ventana al monitor izquierdo)
     • teclas:f5                (Actualizar página)
     
-    [ TECLAS ESPECIALES DISPONIBLES ]
-    • Modificadores: win, windows, ctrl, shift, alt
-    • Función:       f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
-    • Sistema:       enter, space, tab, esc
-    • Direccionales: up, down, left, right
+        [ TECLAS ESPECIALES DISPONIBLES ]
+        • Modificadores: win, windows, ctrl, shift, alt
+        • Función:       f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
+        • Sistema:       enter, space, tab, esc
+        • Direccionales: up, down, left, right
     
     3. VENTANAS NATIVAS (Prefijo "ventana:")
     Manipula el entorno de escritorio y la ventana que esté en primer plano.
@@ -446,6 +446,22 @@ class VentanaConfiguracion:
     • ventana:minimizar_todas  (Esconde todo el espacio de trabajo)
     • ventana:restaurar_todas  (Recupera todas las ventanas minimizadas)
     • ventana:escritorio       (Muestra u oculta el escritorio - Toggle)
+
+    [ GUÍA AVANZADA DE COMANDOS ]
+
+    1. MACROS (Prefijo "macro:")
+    Encadena varias acciones separadas por "|". 
+    Ejemplo: macro:https://gmail.com | esperar:2.0 | teclas:ctrl,t
+    • esperar:X.X   (Pausa en segundos)
+    • teclas:X,Y    (Combinaciones de teclado)
+
+    2. GESTIÓN DE VENTANAS (Atajos de sistema)
+    Puedes usar el prefijo "teclas:" para mover ventanas entre monitores:
+    • Mover a izq:  teclas:win,shift,left
+    • Mover a der:  teclas:win,shift,right
+    • Maximizar:    teclas:win,up
+    • Minimizar:    teclas:win,down
+    
     ======================================================================"""
 
         txt = tk.Text(ven_guia, font=("Consolas", 10), bg="#2d2d2d", fg="#a9b7c6", padx=15, pady=15)
