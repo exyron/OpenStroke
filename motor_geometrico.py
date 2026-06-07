@@ -164,3 +164,19 @@ class ReconocedorGestos:
             return mejor_coincidencia, menor_distancia
         else:
             return None, menor_distancia
+
+    def optimizar_trazo(self, puntos):
+        """
+        Fase 1: El Túnel de Lavado.
+        Suaviza el trazo mediante una media móvil simple para eliminar jitter.
+        """
+        if len(puntos) < 3: return puntos
+
+        suavizado = [puntos[0]]
+        for i in range(1, len(puntos) - 1):
+            # Calculamos la media entre el punto anterior, el actual y el siguiente
+            x = (puntos[i - 1][0] + puntos[i][0] + puntos[i + 1][0]) / 3
+            y = (puntos[i - 1][1] + puntos[i][1] + puntos[i + 1][1]) / 3
+            suavizado.append([x, y])
+        suavizado.append(puntos[-1])
+        return suavizado
