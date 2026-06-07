@@ -102,9 +102,15 @@ class ReconocedorGestos:
 
     def procesar_trazo(self, puntos_crudos):
         if len(puntos_crudos) < 10: return []
-        p1 = self.remuestrear(puntos_crudos)
+
+        # 1. PASAMOS POR EL TÚNEL DE LAVADO (Fase 1)
+        puntos_limpios = self.optimizar_trazo(puntos_crudos)
+
+        # 2. CONTINUAMOS CON EL PROCESADO NORMAL
+        p1 = self.remuestrear(puntos_limpios)
         p2 = self.escalar(p1)
         p3 = self.trasladar_al_origen(p2)
+
         return p3
 
     def calcular_distancia_trazo(self, trazo_dibujado, trazo_plantilla):
