@@ -376,6 +376,39 @@ class OpenStrokeApp:
         return hwnd, zona
 
     def ejecutar_accion(self, comando):
+
+        # ==========================================
+        # 0. SISTEMA DE MACROS (Comandos encadenados)
+        # ==========================================
+        if comando.startswith("macro:"):
+            # Separamos los comandos usando el símbolo "|"
+            pasos = [p.strip() for p in comando[6:].split('|')]
+
+            def procesar_siguiente(index):
+                if index >= len(pasos):
+                    self.mostrar_hud("✅ MACRO FINALIZADA")
+                    return
+
+                paso = pasos[index]
+
+                # Si el comando es un retraso temporal
+                if paso.startswith("esperar:"):
+                    try:
+                        segundos = float(paso.split(":")[1])
+                        milisegundos = int(segundos * 1000)
+                        self.mostrar_hud(f"⏳ ESPERANDO {segundos}s...")
+                        self.root.after(milisegundos, lambda: procesar_siguiente(index + 1))
+                    except:
+                        procesar_siguiente(index + 1)
+                else:
+                    # Ejecutamos el comando normal y pasamos al siguiente casi al instante
+                    self.ejecutar_accion(paso)
+                    self.root.after(50, lambda: procesar_siguiente(index + 1))
+
+            print(f"⚙️ Iniciando Macro de {len(pasos)} pasos...")
+            procesar_siguiente(0)
+            return
+
         # ==========================================
         # 1. LIMPIEZA: Quitamos espacios vacíos y comillas fantasma
         # ==========================================
