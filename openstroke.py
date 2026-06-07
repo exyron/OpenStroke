@@ -413,20 +413,15 @@ class OpenStrokeApp:
             teclado = Controller()
 
             # 2. El Gran Diccionario: Traducimos tu YAML a objetos nativos de pynput
+
             mapa_teclas = {
-                "win": Key.cmd,
-                "windows": Key.cmd,
-                "shift": Key.shift,
-                "ctrl": Key.ctrl,
-                "alt": Key.alt,
-                "left": Key.left,
-                "right": Key.right,
-                "up": Key.up,
-                "down": Key.down,
-                "enter": Key.enter,
-                "space": Key.space,
-                "tab": Key.tab,
-                "esc": Key.esc
+                "win": Key.cmd, "windows": Key.cmd,
+                "shift": Key.shift, "ctrl": Key.ctrl, "alt": Key.alt,
+                "left": Key.left, "right": Key.right, "up": Key.up, "down": Key.down,
+                "enter": Key.enter, "space": Key.space, "tab": Key.tab, "esc": Key.esc,
+                "f1": Key.f1, "f2": Key.f2, "f3": Key.f3, "f4": Key.f4,
+                "f5": Key.f5, "f6": Key.f6, "f7": Key.f7, "f8": Key.f8,
+                "f9": Key.f9, "f10": Key.f10, "f11": Key.f11, "f12": Key.f12
             }
 
             teclas_a_pulsar = []

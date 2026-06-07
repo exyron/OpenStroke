@@ -424,12 +424,14 @@ class VentanaConfiguracion:
     • teclas:ctrl,c            (Copiar)
     • teclas:ctrl,v            (Pegar)
     • teclas:shift,win,left    (Mover ventana al monitor izquierdo)
-
+    • teclas:f5                (Actualizar página)
+    
     [ TECLAS ESPECIALES DISPONIBLES ]
     • Modificadores: win, windows, ctrl, shift, alt
-    • Direccionales: up, down, left, right
+    • Función:       f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
     • Sistema:       enter, space, tab, esc
-
+    • Direccionales: up, down, left, right
+    
     3. VENTANAS NATIVAS (Prefijo "ventana:")
     Manipula el entorno de escritorio y la ventana que esté en primer plano.
     • ventana:minimizar        (Minimiza la ventana actual y la guarda en memoria)
