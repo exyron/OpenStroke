@@ -41,38 +41,38 @@ class ReconocedorGestos:
         return nuevos_puntos[:self.num_puntos]
 
     def escalar(self, puntos):
-        """Escalado proporcional: mantiene la forma original sin deformar."""
-        if not puntos: return []
+        # 1. Buscamos los extremos del trazo
         min_x = min(p[0] for p in puntos)
         max_x = max(p[0] for p in puntos)
         min_y = min(p[1] for p in puntos)
         max_y = max(p[1] for p in puntos)
 
-        ancho = max_x - min_x
-        alto = max_y - min_y
+        # 2. Calculamos el ancho y alto del "cuadro" que contiene el gesto
+        ancho = max(max_x - min_x, 1.0)  # Evitamos división por cero
+        alto = max(max_y - min_y, 1.0)
 
-        lado_mayor = max(ancho, alto)
-        if lado_mayor == 0: lado_mayor = 0.1
-
-        puntos_escalados = []
-        for p in puntos:
-            qx = p[0] * (self.tamano_cuadrado / lado_mayor)
-            qy = p[1] * (self.tamano_cuadrado / lado_mayor)
-            puntos_escalados.append([qx, qy])
-        return puntos_escalados
+        # 3. Escalamos todos los puntos para que quepan en un cuadro de 100x100
+        # Esto hace que el tamaño relativo sea lo que importa, no el absoluto
+        factor = 100.0 / max(ancho, alto)
+        return [[p[0] * factor, p[1] * factor] for p in puntos]
 
     def trasladar_al_origen(self, puntos):
-        if not puntos: return []
-        centro_x = sum(p[0] for p in puntos) / len(puntos)
-        centro_y = sum(p[1] for p in puntos) / len(puntos)
+        # 1. Calculamos el centroide (el centro exacto de la forma)
+        sum_x = sum(p[0] for p in puntos)
+        sum_y = sum(p[1] for p in puntos)
+        centroide_x = sum_x / len(puntos)
+        centroide_y = sum_y / len(puntos)
 
-        puntos_trasladados = []
-        for p in puntos:
-            qx = p[0] - centro_x
-            qy = p[1] - centro_y
-            puntos_trasladados.append([qx, qy])
-        return puntos_trasladados
+        # 2. Restamos el centroide a cada punto para que el nuevo centro sea (0,0)
+        return [[p[0] - centroide_x, p[1] - centroide_y] for p in puntos]
 
+        # --- PEGA AQUÍ EL NUEVO MÉTODO ---
+    def alinear_punto_inicio(self, puntos):
+        # Calcula la distancia al origen para encontrar el punto más cercano al "centro"
+        # o al eje X, ayudando a normalizar el inicio del trazo
+        distancias = [math.hypot(p[0], p[1]) for p in puntos]
+        indice_min = distancias.index(min(distancias))
+        return puntos[indice_min:] + puntos[:indice_min]
     # ==========================================
     # NUEVA IA: LÓGICA DE FORMAS Y ÁNGULOS
     # ==========================================
@@ -99,21 +99,25 @@ class ReconocedorGestos:
         if distancia_vuelo < 0.01: return longitud_total  # Para formas cerradas (como un círculo)
         return longitud_total / distancia_vuelo
     # ==========================================
-
     def procesar_trazo(self, puntos_crudos):
         if len(puntos_crudos) < 10: return []
 
-        # 1. PASAMOS POR EL TÚNEL DE LAVADO (Fase 1)
+        # 1. Túnel de lavado (Suavizado)
         puntos_limpios = self.optimizar_trazo(puntos_crudos)
 
-        # 2. CONTINUAMOS CON EL PROCESADO NORMAL
+        # 2. Normalización estándar
         p1 = self.remuestrear(puntos_limpios)
         p2 = self.escalar(p1)
         p3 = self.trasladar_al_origen(p2)
 
-        return p3
+        # 3. NUEVA ALINEACIÓN DE INICIO (El paso crucial)
+        p4 = self.alinear_punto_inicio(p3)
+
+        return p4
 
     def calcular_distancia_trazo(self, trazo_dibujado, trazo_plantilla):
+        # ANTES del bucle, miramos qué estamos comparando
+        print(f"DEBUG: Comparando trazo[0] {trazo_dibujado[0]} con plantilla[0] {trazo_plantilla[0]}")
         if len(trazo_dibujado) != len(trazo_plantilla): return float('inf')
 
         # 1. Distancia Euclidiana Clásica (El algoritmo base)
@@ -123,36 +127,31 @@ class ReconocedorGestos:
                                           trazo_dibujado[i][1] - trazo_plantilla[i][1])
         distancia_base = distancia_total / len(trazo_dibujado)
 
-        # ==========================================
-        # 2. ANÁLISIS ESTRUCTURAL (Los multiplicadores)
-        # ==========================================
-        # Diferencia de Proporción
+        # ACTIVACIÓN DE LA INTELIGENCIA GEOMÉTRICA
         prop_dibujo = self.calcular_proporcion(trazo_dibujado)
         prop_plantilla = self.calcular_proporcion(trazo_plantilla)
         diferencia_proporcion = abs(prop_dibujo - prop_plantilla)
 
-        # Diferencia de Esquinas / Ángulos
         curv_dibujo = self.calcular_indice_curvatura(trazo_dibujado)
         curv_plantilla = self.calcular_indice_curvatura(trazo_plantilla)
         diferencia_curvatura = abs(curv_dibujo - curv_plantilla)
 
-        # 3. La Sentencia Final
-        # Si la estructura geométrica no coincide, inflamos la distancia artificialmente
-        # para que el motor la perciba como un dibujo incorrecto y la rechace.
+        # RELAJAMOS EL CASTIGO (Modo Flexible)
         multiplicador_castigo = 1.0
 
-        # Las esquinas son muy importantes. Un pequeño desvío castiga severamente (x2.5)
-        multiplicador_castigo += (diferencia_curvatura * 2.5)
-
-        # Suavizamos el castigo de la proporción por si el usuario dibuja un poco estirado
+        # Reducimos el peso de las esquinas y la proporción a la mitad
+        multiplicador_castigo += (diferencia_curvatura * 1.25)
         if diferencia_proporcion < 100:
-            multiplicador_castigo += (diferencia_proporcion * 0.5)
+            multiplicador_castigo += (diferencia_proporcion * 0.25)
 
         return distancia_base * multiplicador_castigo
 
-
     def reconocer(self, puntos_crudos, diccionario_plantillas, umbral_porcentaje):
+
+        # 1. Procesamos y vemos cuántos puntos quedan
         trazo_limpio = self.procesar_trazo(puntos_crudos)
+        print(f"DEBUG: Tras procesado, el trazo tiene {len(trazo_limpio)} puntos")
+
         if not trazo_limpio or not diccionario_plantillas:
             return None, float('inf')
 

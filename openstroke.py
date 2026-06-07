@@ -24,20 +24,18 @@ import string  # Importamos el abecedario nativo de Python
 # ==========================================
 # MODO DEBUG (Resurrección de la Consola)
 # ==========================================
+
 if "--debug" in sys.argv:
     try:
-        # 1. Obligamos a Windows a fabricar una consola en vivo
-        ctypes.windll.kernel32.AllocConsole()
-
-        # 2. Reconectamos los cables de texto (stdout y stderr) a la nueva consola
-        sys.stdout = open("CONOUT$", "w", encoding="utf-8", buffering=1)
-        sys.stderr = open("CONOUT$", "w", encoding="utf-8", buffering=1)
-
-        print("========================================")
-        print("🛠️ OPENSTROKE: MODO DEBUG ACTIVADO")
-        print("========================================")
+        # 'buffering=0' obliga a escribir en el disco al instante
+        f_log = open("debug_log.txt", "w", encoding="utf-8", buffering=0)
+        sys.stdout = f_log
+        sys.stderr = f_log
+        print("DEBUG ACTIVADO - AUN VIVO")
     except Exception as e:
-        pass
+        # Si esto falla, el log estará vacío porque el error es de permisos
+        with open("error_log_fatal.txt", "w") as f:
+            f.write(str(e))
 # ==========================================
 
 # ==========================================
@@ -71,6 +69,13 @@ class OpenStrokeApp:
 
     def __init__(self):
         print("Iniciando OpenStroke v.0.4.9.7 Alpha....")
+        # --- DEFINICIÓN PREVENTIVA ---
+        # Esto evita el AttributeError pase lo que pase con el archivo YAML
+        self.colores = {
+            "normal": "#FF0000", "letras": "#FF00FF",
+            "middle": "#00FFFF", "right": "#008080", "x1": "#800080", "x2": "#000080",
+            "ctrl": "#00FF00", "shift": "#0000FF", "alt": "#FF9800", "space": "#FFFF00"
+        }
         self.root = tk.Tk()
         self.root.withdraw()  # 1. Nos ocultamos en las sombras inmediatamente
 
@@ -142,8 +147,11 @@ class OpenStrokeApp:
         self.setup_tray()
 
         # Arrancamos el radar del ratón
-        self.listener = mouse.Listener(on_click=self.al_hacer_clic, on_move=self.al_mover)
-        self.listener.start()
+        try:
+            self.listener = mouse.Listener(on_click=self.al_hacer_clic, on_move=self.al_mover)
+            self.listener.start()
+        except Exception as e:
+            print(f"⚠️ Aviso del listener: {e}")
 
         self.verificar_timeout()
         self.root.protocol("WM_DELETE_WINDOW", self.salir_total)
@@ -779,6 +787,12 @@ class OpenStrokeApp:
             return
 
         nombre_gesto, distancia = self.motor.reconocer(self.puntos, self.plantillas, self.umbral_tolerancia)
+
+        # CHIVATO DE DISTANCIA (Añade esto justo debajo)
+        if distancia != float('inf'):
+            print(
+                f"DEBUG: Gesto '{nombre_gesto}' - Distancia calculada: {distancia:.2f} (Umbral: {self.umbral_tolerancia * 250})")
+
         if nombre_gesto:
             print(f"🕵️ Detectado: {nombre_gesto} (Capa: {self.modificador_actual})")
             comando = None
