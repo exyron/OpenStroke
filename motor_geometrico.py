@@ -67,12 +67,27 @@ class ReconocedorGestos:
         return [[p[0] - centroide_x, p[1] - centroide_y] for p in puntos]
 
         # --- PEGA AQUÍ EL NUEVO MÉTODO ---
+
     def alinear_punto_inicio(self, puntos):
-        # Calcula la distancia al origen para encontrar el punto más cercano al "centro"
-        # o al eje X, ayudando a normalizar el inicio del trazo
+        import math
+
+        # 1. Medimos la distancia entre el primer punto que dibujaste y el último
+        distancia_cierre = math.hypot(puntos[0][0] - puntos[-1][0], puntos[0][1] - puntos[-1][1])
+
+        # 2. Como nuestra caja virtual es de 100x100, si el inicio y el fin están
+        # a más de 30 unidades de distancia, es una forma ABIERTA (como una línea o una M).
+        # En este caso, respetamos tu trazado original de principio a fin.
+        if distancia_cierre > 30:
+            return puntos
+
+        # 3. Si están muy cerca (menos de 30), es una forma CERRADA (como la 'O').
+        # Aquí SÍ aplicamos la rotación para no perder la precisión que logramos ayer.
         distancias = [math.hypot(p[0], p[1]) for p in puntos]
         indice_min = distancias.index(min(distancias))
         return puntos[indice_min:] + puntos[:indice_min]
+
+
+
     # ==========================================
     # NUEVA IA: LÓGICA DE FORMAS Y ÁNGULOS
     # ==========================================

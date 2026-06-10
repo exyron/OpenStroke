@@ -209,7 +209,7 @@ class VentanaConfiguracion:
         self.aplicar_cambios()
         self.al_cerrar_x()
 
-    def abrir_ventana_grabacion(self):
+    def abrir_ventana_grabacion(self, nombre_predefinido=""):
         # ==========================================
         # NUEVO: Escudo Anti-Clones (Patrón Singleton)
         # ==========================================
@@ -254,6 +254,11 @@ class VentanaConfiguracion:
         tk.Label(frame_guardar, text="Nombre:", font=("Arial", 10, "bold")).pack(side=tk.LEFT)
         entry_nombre = tk.Entry(frame_guardar, font=("Arial", 10), justify="center")
         entry_nombre.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=10)
+        # --- AÑADE ESTO AQUÍ ---
+        if nombre_predefinido:
+            entry_nombre.insert(0, nombre_predefinido)
+            entry_nombre.config(state="disabled")  # Lo bloqueamos para evitar errores de escritura al regrabar
+        # -----------------------
 
         puntos_grabados = []
         self.trazo_limpio_actual = []
@@ -290,9 +295,17 @@ class VentanaConfiguracion:
                 if self.paso_grabar < len(puntos_norm) - 1:
                     p1 = puntos_norm[self.paso_grabar]
                     p2 = puntos_norm[self.paso_grabar + 1]
-                    # Pintamos el resultado del motor en un morado espectacular
-                    lienzo.create_line(p1[0], p1[1], p2[0], p2[1], fill="#9c27b0", width=4, capstyle=tk.ROUND,
-                                       smooth=True, tags="animacion")
+
+                    # --- LAS GAFAS VISUALES ---
+                    import math
+                    distancia = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
+
+                    # Si la distancia es normal, pintamos. Si es un salto gigante matemático, lo ocultamos.
+                    if distancia < (min(w, h) / 3):
+                        lienzo.create_line(p1[0], p1[1], p2[0], p2[1], fill="#9c27b0", width=4, capstyle=tk.ROUND,
+                                           smooth=True, tags="animacion")
+                    # --------------------------
+
                     self.paso_grabar += 1
                     self.id_anim_grabar = lienzo.after(10, animar)
                 else:
@@ -942,8 +955,17 @@ class VentanaConfiguracion:
 
                     p1 = puntos_norm[self.anim_step]
                     p2 = puntos_norm[self.anim_step + 1]
-                    self.canvas_animacion.create_line(p1[0], p1[1], p2[0], p2[1], fill="#00FF00", width=3,
-                                                      capstyle=tk.ROUND, smooth=True)
+
+                    # --- LAS GAFAS VISUALES ---
+                    import math
+                    distancia = math.hypot(p2[0] - p1[0], p2[1] - p1[1])
+
+                    # En un lienzo de 80x80, un salto mayor a 25px es un "corte fantasma", lo ocultamos.
+                    if distancia < 25:
+                        self.canvas_animacion.create_line(p1[0], p1[1], p2[0], p2[1], fill="#00FF00", width=3,
+                                                          capstyle=tk.ROUND, smooth=True)
+                    # --------------------------
+
                     self.anim_step += 1
                     self.id_animacion = self.canvas_animacion.after(15, dibujar_paso)
                 else:
@@ -1197,6 +1219,20 @@ class VentanaConfiguracion:
                 self.actualizar_lista_gestor()
                 self.actualizar_lista_gestos()
                 self.actualizar_desplegable_plantillas()
+
+        def regrabar():
+            sel = self.listbox_plantillas.curselection()
+            if not sel:
+                return messagebox.showwarning("Aviso", "Selecciona una plantilla de la lista para regrabar.",
+                                              parent=self.ventana)
+
+            nombre_viejo = self.listbox_plantillas.get(sel[0])
+
+            # Lanzamos la grabadora pasándole el nombre de la plantilla seleccionada
+            self.abrir_ventana_grabacion(nombre_predefinido=nombre_viejo)
+
+        tk.Button(frame_bot_plan, text="Regrabar 🔄", bg="#2196F3", fg="white", width=15, pady=5,
+                  command=regrabar).pack(pady=5)
 
         tk.Button(frame_bot_plan, text="Renombrar ✏️", bg="#FF9800", fg="white", width=15, pady=5,
                   command=renombrar).pack(pady=5)

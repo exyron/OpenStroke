@@ -22,21 +22,19 @@ import keyboard
 import string  # Importamos el abecedario nativo de Python
 
 # ==========================================
-# MODO DEBUG (Resurrección de la Consola)
+# INTERRUPTOR MAESTRO DE DEPURACIÓN
 # ==========================================
+# sys.argv es una lista que contiene todo lo que se escribe en la terminal al lanzar el programa.
+# Si lanzas: python openstroke.py --debug, sys.argv será ['openstroke.py', '--debug']
+MODO_DEBUG = "--debug" in sys.argv
 
-if "--debug" in sys.argv:
-    try:
-        # 'buffering=0' obliga a escribir en el disco al instante
-        f_log = open("debug_log.txt", "w", encoding="utf-8", buffering=0)
-        sys.stdout = f_log
-        sys.stderr = f_log
-        print("DEBUG ACTIVADO - AUN VIVO")
-    except Exception as e:
-        # Si esto falla, el log estará vacío porque el error es de permisos
-        with open("error_log_fatal.txt", "w") as f:
-            f.write(str(e))
-# ==========================================
+def debug_print(mensaje):
+    """
+    Silenciador inteligente: Evalúa el booleano.
+    Si no estamos en modo debug, la función no hace nada y no consume ciclos de CPU.
+    """
+    if MODO_DEBUG:
+        print(mensaje)
 
 # ==========================================
 # EL RASTREADOR DE RECURSOS (Soporte PyInstaller)
@@ -441,8 +439,6 @@ class OpenStrokeApp:
         # ==========================================
         self.mostrar_hud(f"🚀 {comando.upper()}")
 
-
-
         if comando.startswith("teclas:"):
             from pynput.keyboard import Controller, Key
             import time
@@ -542,7 +538,6 @@ class OpenStrokeApp:
                 return
                 # ==========================================
 
-
             hwnd = ctypes.windll.user32.GetForegroundWindow()
 
             # ==========================================
@@ -615,12 +610,24 @@ class OpenStrokeApp:
                 # ==========================================
 
         else:
-            # Si es un programa o archivo normal:
+            # ==========================================
+            # EJECUCIÓN PURA Y AISLADA ("EL SILENCIADOR")
+            # ==========================================
+            import os
+            import subprocess
+
             try:
-                # Popen lanza el programa y le devuelve el control a Python INMEDIATAMENTE
-                subprocess.Popen(comando, shell=True)
-            except Exception as e:
-                print(f"Error al ejecutar: {e}")
+                # 1. El Método Nativo: Le pedimos a Windows que abra el archivo o ruta.
+                # Es la forma más limpia, equivale a hacer "doble clic" en el explorador.
+                # Al hacerlo así, el programa hijo se independiza totalmente de nuestra consola.
+                os.startfile(comando)
+            except Exception:
+                # 2. El Plan B (El Silenciador): Si os.startfile no lo entiende (ej: es un comando raro),
+                # usamos subprocess pero mandamos toda su "basura textual" a DEVNULL (el vacío absoluto).
+                try:
+                    subprocess.Popen(comando, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                except Exception as e:
+                    print(f"⚠️ Error al ejecutar el programa: {e}")
 
     # ==========================================
     # CÓDIGO BÁSICO (CONFIGURACIÓN, RAYOS X Y DIBUJO)
@@ -1131,6 +1138,9 @@ if __name__ == "__main__":
     # ==========================================
     # ESCUDO ANTI-CLONES (MutEx Única Instancia)
     # ==========================================
+    import ctypes
+    import sys
+
     # Creamos un "ticket" único en el kernel de Windows para nuestro programa
     mutex_nombre = "OpenStroke_App_Mutex_Definitivo"
     mutex = ctypes.windll.kernel32.CreateMutexW(None, False, mutex_nombre)
@@ -1138,7 +1148,16 @@ if __name__ == "__main__":
     # 183 es el código de Windows para ERROR_ALREADY_EXISTS
     if ctypes.windll.kernel32.GetLastError() == 183:
         print("⚠️ OpenStroke ya está en ejecución. Cerrando clon silenciosamente...")
-        sys.exit(0) # Aniquilamos esta instancia antes de que nazca
+        sys.exit(0)  # Aniquilamos esta instancia antes de que nazca
     # ==========================================
+
+    # ==========================================
+    # ARRANQUE Y CHIVATO DE DEPURACIÓN
+    # ==========================================
+    if MODO_DEBUG:
+        print("🐛 [BUILD 2026.06.10] Iniciando OpenStroke en MODO DEPURACIÓN...")
+        print("🐛 El motor geométrico mostrará sus cálculos en la consola.")
+    else:
+        print("Iniciando OpenStroke Build 2026.06.10....")
 
     app = OpenStrokeApp()
