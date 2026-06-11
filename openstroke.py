@@ -66,7 +66,6 @@ class OpenStrokeApp:
 
 
     def __init__(self):
-        print("Iniciando OpenStroke v.0.4.9.7 Alpha....")
         # --- DEFINICIÓN PREVENTIVA ---
         # Esto evita el AttributeError pase lo que pase con el archivo YAML
         self.colores = {

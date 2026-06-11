@@ -1,5 +1,12 @@
 import math
+import sys
 
+# Interruptor de depuración local para el motor
+MODO_DEBUG = "--debug" in sys.argv
+
+def debug_print(mensaje):
+    if MODO_DEBUG:
+        print(mensaje)
 
 class ReconocedorGestos:
     def __init__(self, num_puntos=64, tamano_cuadrado=250.0):
@@ -132,7 +139,7 @@ class ReconocedorGestos:
 
     def calcular_distancia_trazo(self, trazo_dibujado, trazo_plantilla):
         # ANTES del bucle, miramos qué estamos comparando
-        print(f"DEBUG: Comparando trazo[0] {trazo_dibujado[0]} con plantilla[0] {trazo_plantilla[0]}")
+        debug_print(f"DEBUG: Comparando trazo[0] {trazo_dibujado[0]} con plantilla[0] {trazo_plantilla[0]}")
         if len(trazo_dibujado) != len(trazo_plantilla): return float('inf')
 
         # 1. Distancia Euclidiana Clásica (El algoritmo base)
@@ -165,7 +172,7 @@ class ReconocedorGestos:
 
         # 1. Procesamos y vemos cuántos puntos quedan
         trazo_limpio = self.procesar_trazo(puntos_crudos)
-        print(f"DEBUG: Tras procesado, el trazo tiene {len(trazo_limpio)} puntos")
+        debug_print(f"DEBUG: Tras procesado, el trazo tiene {len(trazo_limpio)} puntos")
 
         if not trazo_limpio or not diccionario_plantillas:
             return None, float('inf')
