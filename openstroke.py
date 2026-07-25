@@ -21,6 +21,15 @@ import sys
 import keyboard
 import string  # Importamos el abecedario nativo de Python
 
+if sys.platform == "win32":
+    try:
+        if hasattr(sys.stdout, 'reconfigure'):
+            sys.stdout.reconfigure(encoding='utf-8')
+        if hasattr(sys.stderr, 'reconfigure'):
+            sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 # ==========================================
 # INTERRUPTOR MAESTRO DE DEPURACIÓN
 # ==========================================
@@ -184,6 +193,30 @@ class OpenStrokeApp:
         self.canvas.pack(fill="both", expand=True)
 
         self.root.deiconify()  # Salimos de las sombras
+        self.asegurar_lienzo_arriba()
+
+    def asegurar_lienzo_arriba(self):
+        """Fuerza al lienzo transparente a colocarse en la cima absoluta de la pantalla (Z-Order) sin robar el foco"""
+        try:
+            self.root.lift()
+            hwnd = self.root.winfo_id()
+            parent = ctypes.windll.user32.GetParent(hwnd)
+            target_hwnd = parent if parent else hwnd
+
+            HWND_TOPMOST = -1
+            SWP_NOSIZE = 0x0001
+            SWP_NOMOVE = 0x0002
+            SWP_NOACTIVATE = 0x0010
+            SWP_SHOWWINDOW = 0x0040
+
+            ctypes.windll.user32.SetWindowPos(
+                target_hwnd,
+                HWND_TOPMOST,
+                0, 0, 0, 0,
+                SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE | SWP_SHOWWINDOW
+            )
+        except Exception as e:
+            debug_print(f"⚠️ Error al asegurar Z-Order del lienzo: {e}")
 
     def mostrar_splash_screen(self):
         """Ventana independiente super ligera para la pantalla de carga"""
@@ -977,6 +1010,7 @@ class OpenStrokeApp:
             if not self.gesto_activado and math.hypot(dx, dy) > 15:
                 self.gesto_activado = True
                 self.puntos.append([self.pos_inicial[0] - self.offset_x, self.pos_inicial[1] - self.offset_y])
+                self.root.after(0, self.asegurar_lienzo_arriba)
 
             if self.gesto_activado:
                 self.puntos.append([x - self.offset_x, y - self.offset_y])
@@ -1030,7 +1064,7 @@ class OpenStrokeApp:
         self.root.withdraw()
         self.mouse_controller.press(self.boton_presionado)
         self.mouse_controller.release(self.boton_presionado)
-        self.root.after(150, lambda: self.root.deiconify())
+        self.root.after(150, lambda: (self.root.deiconify(), self.asegurar_lienzo_arriba()))
         self.root.after(200, lambda: setattr(self, 'simulando_clic', False))
 
     def obtener_imagen_estado(self, pausado=False):
