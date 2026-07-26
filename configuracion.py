@@ -141,9 +141,18 @@ class VentanaConfiguracion:
         self.app.poderes_jedi = self.var_jedi.get()
         self.app.mostrar_splash = self.var_splash.get()
 
+        # Capturar idioma seleccionado
+        if hasattr(self, 'combo_idioma'):
+            nombre_sel = self.combo_idioma.get()
+            codigo_sel = getattr(self, 'mapa_codigos_idioma', {}).get(nombre_sel, 'es')
+            self.app.idioma = codigo_sel
+            if hasattr(self.app, 'i18n'):
+                self.app.i18n.cargar_idioma(codigo_sel)
+
         # === 1. CONSTRUIMOS EL DICCIONARIO PARA EL YAML ===
         datos = {
             'ajustes': {
+                'idioma': getattr(self.app, 'idioma', 'es'),
                 'tiempo_cancelacion': self.app.tiempo_maximo_s,
                 'color': self.app.color_linea,
                 'grosor': self.app.grosor_linea,
@@ -635,6 +644,27 @@ class VentanaConfiguracion:
         self.var_splash = tk.BooleanVar(value=getattr(self.app, 'mostrar_splash', False))
         tk.Checkbutton(frame_pref, text="Mostrar Pantalla de Carga (Splash Screen) al iniciar",
                        variable=self.var_splash, font=("Arial", 10, "bold"), fg="#2196F3").pack(anchor="w", pady=10)
+
+        # ==========================================
+        # SECTOR MULTI-IDIOMA (i18n)
+        # ==========================================
+        frame_idioma = tk.LabelFrame(frame_pref, text="🌐 Idioma / Language", font=("Arial", 10, "bold"), padx=15, pady=10)
+        frame_idioma.pack(fill=tk.X, pady=10)
+
+        tk.Label(frame_idioma, text="Seleccionar Idioma / Select Language:", font=("Arial", 9)).pack(side=tk.LEFT, padx=5)
+
+        self.combo_idioma = ttk.Combobox(frame_idioma, state="readonly", width=25)
+        
+        # Escaneamos idiomas disponibles a través del GestorIdiomas de la app
+        idiomas_map = getattr(getattr(self.app, 'i18n', None), 'idiomas_disponibles', {'es': 'Español', 'en': 'English'})
+        self.mapa_codigos_idioma = {v: k for k, v in idiomas_map.items()}
+        self.combo_idioma['values'] = list(idiomas_map.values())
+
+        # Seleccionar idioma actual
+        codigo_actual = getattr(self.app, 'idioma', 'es')
+        nombre_actual = idiomas_map.get(codigo_actual, "Español")
+        self.combo_idioma.set(nombre_actual)
+        self.combo_idioma.pack(side=tk.LEFT, padx=10)
 
         # ==========================================
         # NUEVA ZONA: APARIENCIA DEL TRAZO

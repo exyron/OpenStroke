@@ -63,6 +63,7 @@ def ruta_recurso(relative_path):
 # --- IMPORTACIÓN DE NUESTROS MÓDULOS AISLADOS ---
 from motor_geometrico import ReconocedorGestos
 from configuracion import VentanaConfiguracion
+from i18n import GestorIdiomas
 
 # --- SOPORTE DPI ALTO ---
 try:
@@ -692,7 +693,8 @@ class OpenStrokeApp:
             self.excepciones = []
             self.poderes_jedi = True
             self.mostrar_splash = False
-            self.sigilo = []
+            self.idioma = 'es'
+            self.i18n = GestorIdiomas(self.idioma)
             self.grosor_borde = 6  # Valor por defecto del borde
             return
 
@@ -709,9 +711,12 @@ class OpenStrokeApp:
                 self.geometria_guia = ajustes.get('geometria_guia', '1000x1400')
                 self.geometria_grabar = ajustes.get('geometria_grabar', '500x500')
 
-                self.umbral_tolerancia = float(ajustes.get('tolerancia', 0.35))
+                self.idioma = ajustes.get('idioma', 'es')
+                if not hasattr(self, 'i18n'):
+                    self.i18n = GestorIdiomas(self.idioma)
+                else:
+                    self.i18n.cargar_idioma(self.idioma)
 
-                # Ya NO leemos el arranque_automatico del YAML, mandan las llaves de Windows
                 self.poderes_jedi = ajustes.get('poderes_jedi', True)
                 self.mostrar_splash = ajustes.get('mostrar_splash', False)
 
@@ -1106,9 +1111,9 @@ class OpenStrokeApp:
         # Cabecera Premium
         tk.Label(self.ventana_acerca, text="OpenStroke", font=("Segoe UI", 20, "bold"), bg="#f0f0f0",
                  fg="#2196F3").pack(pady=(15, 0))
-        tk.Label(self.ventana_acerca, text="Versión 0.5 | Build: 2026.07.26", font=("Segoe UI", 10),
+        tk.Label(self.ventana_acerca, text=self.i18n.t("acerca.subtitulo"), font=("Segoe UI", 10),
                  bg="#f0f0f0", fg="#555").pack(pady=(0, 10))
-        tk.Label(self.ventana_acerca, text="Ratón y Teclado Unidos, Multi-entrada, Código Abierto",
+        tk.Label(self.ventana_acerca, text=self.i18n.t("acerca.descripcion"),
                  font=("Segoe UI", 9, "italic"), bg="#f0f0f0", fg="#888").pack(pady=(0, 15))
 
         # El Visor del Changelog
@@ -1150,10 +1155,10 @@ class OpenStrokeApp:
             self.root.after(10, lambda: setattr(icon, 'icon', self.obtener_imagen_estado(self.pausado)))
 
         menu = pystray.Menu(
-            pystray.MenuItem("Pausar / Reanudar", toggle_pausa, default=True),
-            pystray.MenuItem("Configuración", pedir_configuracion),
-            pystray.MenuItem("Acerca de...", pedir_acerca_de),
-            pystray.MenuItem("Salir", self.salir_total)
+            pystray.MenuItem(lambda text: self.i18n.t("menu.pausar"), toggle_pausa, default=True),
+            pystray.MenuItem(lambda text: self.i18n.t("menu.configuracion"), pedir_configuracion),
+            pystray.MenuItem(lambda text: self.i18n.t("menu.acerca_de"), pedir_acerca_de),
+            pystray.MenuItem(lambda text: self.i18n.t("menu.salir"), self.salir_total)
         )
 
         # Le inyectamos el icono "activo" para que sea el que muestre al arrancar

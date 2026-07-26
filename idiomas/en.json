@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "codigo": "en",
+    "nombre_idioma": "English",
+    "autor": "exyron"
+  },
+  "menu": {
+    "pausar": "Pause / Resume",
+    "configuracion": "Settings",
+    "acerca_de": "About...",
+    "salir": "Exit"
+  },
+  "acerca": {
+    "titulo": "About OpenStroke",
+    "subtitulo": "Version 0.5 | Build: 2026.07.26",
+    "descripcion": "Mouse & Keyboard United, Multi-input, Open Source",
+    "sin_changelog": "File 'changelog.txt' not found."
+  },
+  "hud": {
+    "macro_finalizada": "✅ MACRO FINISHED",
+    "ventana_liberada": "⚓ Window Released (Normal)",
+    "ventana_fijada": "📌 Window Pinned (Always on Top)",
+    "transparencia_desactivada": "👻 Transparency Disabled",
+    "transparencia_activada": "👻 Transparency Enabled (50%)",
+    "rescatada": "🪄 Rescued",
+    "ventana_perdida": "⚠️ Lost Window",
+    "memoria_vacia": "⚠️ Empty Memory",
+    "en_memoria": "⏬ In Memory"
+  },
+  "ajustes": {
+    "titulo": "OpenStroke Settings v0.5",
+    "idioma_label": "Interface Language:",
+    "guardar": "Save",
+    "cancelar": "Cancel",
+    "pestanas": {
+      "preferencias": "Preferences",
+      "gestos": "Gestos & Shortcuts",
+      "apariencia": "Appearance",
+      "excepciones": "Exceptions"
+    },
+    "preferencias": {
+      "arranque": "Launch automatically with Windows",
+      "jedi": "Enable Jedi Powers (Title bar button tricks)",
+      "splash": "Show splash screen on startup",
+      "tiempo_cancelacion": "Max gesture timeout (seconds):",
+      "tolerancia": "Geometric recognition tolerance:"
+    },
+    "apariencia": {
+      "color_trazo": "Default stroke color:",
+      "grosor_trazo": "Stroke width:",
+      "borde_trazo": "High contrast outline (aura):"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "codigo": "es",
+    "nombre_idioma": "Español",
+    "autor": "exyron"
+  },
+  "menu": {
+    "pausar": "Pausar / Reanudar",
+    "configuracion": "Configuración",
+    "acerca_de": "Acerca de...",
+    "salir": "Salir"
+  },
+  "acerca": {
+    "titulo": "Acerca de OpenStroke",
+    "subtitulo": "Versión 0.5 | Build: 2026.07.26",
+    "descripcion": "Ratón y Teclado Unidos, Multi-entrada, Código Abierto",
+    "sin_changelog": "No se ha encontrado el archivo 'changelog.txt'."
+  },
+  "hud": {
+    "macro_finalizada": "✅ MACRO FINALIZADA",
+    "ventana_liberada": "⚓ Ventana liberada (Normal)",
+    "ventana_fijada": "📌 Ventana fijada (Always on Top)",
+    "transparencia_desactivada": "👻 Transparencia desactivada",
+    "transparencia_activada": "👻 Transparencia activada (50%)",
+    "rescatada": "🪄 Rescatada",
+    "ventana_perdida": "⚠️ Ventana perdida",
+    "memoria_vacia": "⚠️ Memoria vacía",
+    "en_memoria": "⏬ En memoria"
+  },
+  "ajustes": {
+    "titulo": "Ajustes de OpenStroke v0.5",
+    "idioma_label": "Idioma de la interfaz:",
+    "guardar": "Guardar",
+    "cancelar": "Cancelar",
+    "pestanas": {
+      "preferencias": "Preferencias",
+      "gestos": "Gestos y Atajos",
+      "apariencia": "Apariencia",
+      "excepciones": "Excepciones"
+    },
+    "preferencias": {
+      "arranque": "Arrancar automáticamente con Windows",
+      "jedi": "Activar Poderes Jedi (Trucos en botones de ventana)",
+      "splash": "Mostrar pantalla de carga al iniciar",
+      "tiempo_cancelacion": "Tiempo máximo para completar un gesto (segundos):",
+      "tolerancia": "Tolerancia de reconocimiento geométrico:"
+    },
+    "apariencia": {
+      "color_trazo": "Color del trazo por defecto:",
+      "grosor_trazo": "Grosor del trazo:",
+      "borde_trazo": "Aura de alto contraste (borde):"
+    }
+  }
+}
