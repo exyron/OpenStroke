@@ -46,7 +46,7 @@ class VentanaConfiguracion:
             self.app.icon.icon = self.app.obtener_imagen_estado(pausado=True)
 
         self.ventana = tk.Toplevel(self.app.root)
-        self.ventana.title("Ajustes de OpenStroke v4.9.7")
+        self.ventana.title("Ajustes de OpenStroke v0.5")
 
         # 1. Tamaño por defecto si no hay YAML (Formato amplio para 4K)
         self.ventana.geometry(getattr(self.app, 'geometria_config', "1800x1100"))

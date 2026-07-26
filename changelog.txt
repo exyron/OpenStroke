@@ -1,7 +1,17 @@
 === HISTORIAL DE CAMBIOS OPENSTROKE ===
 
-VERSION 0.4.9.7 - 2026-06-06
+VERSION 0.5 - 2026-07-26
 ============================
+
+🚀 NUEVO & MEJORADO:
+- Motor Geométrico V5.0: Reestructuración y estabilización del algoritmo de reconocimiento geométrico (normalización de centroide, escalado y alineación de punto de inicio).
+- Capa de Dibujo Transparente Multiventana (Z-Order HWND_TOPMOST): Los trazos de los gestos se muestran siempre por encima de cualquier ventana activa (Explorador de Windows, Chrome, Brave, WhatsApp, etc.) sin robar el foco del sistema.
+- Sistema de Macros Avanzado: Soporte para comandos encadenados (`macro:`) y esperas temporales (`esperar:ms`).
+- Soporte Completo de Atajos y Teclas F1-F12 en combinaciones con capas modificadoras.
+- Silenciador de logs de depuración y modo de depuración inteligente (`--debug`).
+- Corrección de codificación UTF-8 en consolas Windows para evitar caídas inesperadas al mostrar caracteres especiales.
+
+
 
 CORREGIDO:
 - Resuelto un fallo critico de sincronizacion donde Windows ignoraba teclas modificadoras (Shift) al combinarlas con la tecla Windows en atajos nativos del sistema.

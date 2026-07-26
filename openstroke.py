@@ -1106,7 +1106,7 @@ class OpenStrokeApp:
         # Cabecera Premium
         tk.Label(self.ventana_acerca, text="OpenStroke", font=("Segoe UI", 20, "bold"), bg="#f0f0f0",
                  fg="#2196F3").pack(pady=(15, 0))
-        tk.Label(self.ventana_acerca, text="Versión 4.9.7 Alpha | Build: 2026.06.07", font=("Segoe UI", 10),
+        tk.Label(self.ventana_acerca, text="Versión 0.5 | Build: 2026.07.26", font=("Segoe UI", 10),
                  bg="#f0f0f0", fg="#555").pack(pady=(0, 10))
         tk.Label(self.ventana_acerca, text="Ratón y Teclado Unidos, Multi-entrada, Código Abierto",
                  font=("Segoe UI", 9, "italic"), bg="#f0f0f0", fg="#888").pack(pady=(0, 15))
@@ -1188,9 +1188,9 @@ if __name__ == "__main__":
     # ARRANQUE Y CHIVATO DE DEPURACIÓN
     # ==========================================
     if MODO_DEBUG:
-        print("🐛 [BUILD 2026.06.10] Iniciando OpenStroke en MODO DEPURACIÓN...")
+        print("🐛 [BUILD 2026.07.26] Iniciando OpenStroke v0.5 en MODO DEPURACIÓN...")
         print("🐛 El motor geométrico mostrará sus cálculos en la consola.")
     else:
-        print("Iniciando OpenStroke Build 2026.06.10....")
+        print("Iniciando OpenStroke v0.5 Build 2026.07.26....")
 
     app = OpenStrokeApp()
