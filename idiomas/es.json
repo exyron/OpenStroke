@@ -12,7 +12,7 @@
   },
   "acerca": {
     "titulo": "Acerca de OpenStroke",
-    "subtitulo": "Versión 0.5 | Build: 2026.07.26",
+    "subtitulo": "Versión 0.5.0.0.1 | Build: 2026.07.26",
     "descripcion": "Ratón y Teclado Unidos, Multi-entrada, Código Abierto",
     "sin_changelog": "No se ha encontrado el archivo 'changelog.txt'."
   },
@@ -28,27 +28,78 @@
     "en_memoria": "⏬ En memoria"
   },
   "ajustes": {
-    "titulo": "Ajustes de OpenStroke v0.5",
-    "idioma_label": "Idioma de la interfaz:",
-    "guardar": "Guardar",
-    "cancelar": "Cancelar",
+    "titulo": "Ajustes de OpenStroke v0.5.0.0.1",
+    "idioma_label": "Seleccionar Idioma / Select Language:",
+    "btn_guardar_cerrar": "Guardar y Cerrar",
+    "btn_cancelar": "Cancelar",
+    "btn_aplicar": "Aplicar",
+    "btn_reset": "🔄 Reset",
+    "btn_grabar_forma": "✏️ Grabar Forma",
+    "app_activa": {
+      "label": "App Activa:",
+      "global": "GLOBAL",
+      "excepciones": "EXCEPCIONES",
+      "sigilo": "MODO SIGILO"
+    },
+    "tabla": {
+      "col_forma": "Forma / Gesto",
+      "col_capa": "Tecla / Capa",
+      "col_comando": "Acción / Comando"
+    },
+    "gestor_plantillas": {
+      "subtitulo": "Gestiona las formas geométricas del motor.",
+      "btn_regrabar": "Regrabar 🔄",
+      "btn_renombrar": "Renombrar ✏️",
+      "btn_eliminar": "Eliminar 🗑️",
+      "popup_renombrar_titulo": "Renombrar",
+      "popup_renombrar_prompt": "Nuevo nombre para '{viejo}':",
+      "popup_renombrar_aviso": "Selecciona una plantilla de la lista para renombrar.",
+      "popup_borrar_titulo": "Borrar",
+      "popup_borrar_pregunta": "¿Borrar '{nombre}' y sus atajos?",
+      "popup_eliminar_aviso": "Selecciona una plantilla de la lista para eliminar.",
+      "popup_aviso_titulo": "Aviso",
+      "popup_regrabar_aviso": "Selecciona una plantilla de la lista para regrabar."
+    },
     "pestanas": {
-      "preferencias": "Preferencias",
-      "gestos": "Gestos y Atajos",
-      "apariencia": "Apariencia",
-      "excepciones": "Excepciones"
+      "atajos": "🚀 Atajos y Config",
+      "plantillas": "📐 Gestor Plantillas",
+      "colores": "🎨 Colores",
+      "preferencias": "⚙️ Preferencias"
     },
     "preferencias": {
-      "arranque": "Arrancar automáticamente con Windows",
-      "jedi": "Activar Poderes Jedi (Trucos en botones de ventana)",
-      "splash": "Mostrar pantalla de carga al iniciar",
-      "tiempo_cancelacion": "Tiempo máximo para completar un gesto (segundos):",
-      "tolerancia": "Tolerancia de reconocimiento geométrico:"
+      "arranque": "Arrancar OpenStroke con Windows",
+      "jedi": "Poderes Jedi (Manipular ventanas con clic derecho)",
+      "splash": "Mostrar Pantalla de Carga (Splash Screen) al iniciar",
+      "sector_idioma": "🌐 Idioma / Language",
+      "sector_apariencia": "🎨 Apariencia del Trazo",
+      "grosor": "Grosor de la Línea:",
+      "borde": "Aura de Alto Contraste (Borde):",
+      "tolerancia": "Tolerancia del Motor Geométrico:",
+      "tiempo_maximo": "Tiempo Máximo de Cancelación (segundos):"
     },
-    "apariencia": {
-      "color_trazo": "Color del trazo por defecto:",
-      "grosor_trazo": "Grosor del trazo:",
-      "borde_trazo": "Aura de alto contraste (borde):"
+    "colores": {
+      "normal": "Trazo Normal",
+      "letras": "Letras (A-Z)",
+      "middle": "Clic Central",
+      "x1": "Botón X1",
+      "x2": "Botón X2",
+      "ctrl": "Tecla Ctrl",
+      "shift": "Tecla Shift",
+      "alt": "Tecla Alt",
+      "space": "Espaciadora"
     }
+  },
+  "grabadora": {
+    "titulo": "Grabar Nueva Forma",
+    "instrucciones": "Dibuja UNA SOLA LÍNEA continua.\nAl soltar el ratón, verás la lectura del motor en bucle.",
+    "nombre": "Nombre:",
+    "btn_guardar": "💾 Guardar Forma",
+    "aviso_corto": "Trazo muy corto.",
+    "aviso_nombre": "Ponle un nombre a la forma.",
+    "aviso_trazo": "Dibuja un trazo primero."
+  },
+  "guia": {
+    "titulo": "📚 Guía de Comandos",
+    "texto": "======================================================================\n                  GUÍA DE COMANDOS DE OPENSTROKE\n======================================================================\n\n1. PROGRAMAS Y ARCHIVOS (Por defecto)\nEscribe el nombre del ejecutable o la ruta nativa del archivo.\n• notepad\n• calc\n• chrome.exe https://google.es\n• C:\\Windows\\System32\n\n2. ATAJOS DE TECLADO (Prefijo \"teclas:\")\nSimula la pulsación física de un acorde de teclas en el sistema.\n• teclas:ctrl,c            (Copiar)\n• teclas:ctrl,v            (Pegar)\n• teclas:shift,win,left    (Mover ventana al monitor izquierdo)\n• teclas:f5                (Actualizar página)\n\n    [ TECLAS ESPECIALES DISPONIBLES ]\n    • Modificadores: win, windows, ctrl, shift, alt\n    • Función:       f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12\n    • Sistema:       enter, space, tab, esc\n    • Direccionales: up, down, left, right\n\n3. VENTANAS NATIVAS (Prefijo \"ventana:\")\nManipula el entorno de escritorio y la ventana que esté en primer plano.\n• ventana:minimizar        (Minimiza la ventana actual y la guarda en memoria)\n• ventana:maximizar        (Maximiza o restaura la ventana actual)\n• ventana:restaurar_una    (Rescata la última ventana minimizada por OpenStroke)\n• ventana:cerrar           (Cierra la ventana activa - Alt+F4)\n• ventana:fijar            (Mantiene la ventana siempre al frente)\n• ventana:transparente     (Aplica un efecto fantasma al 50%)\n• ventana:siguiente        (Salto rápido a la siguiente ventana)\n• ventana:atras            (Salto inverso a la ventana anterior)\n• ventana:arriba           (Sube un nivel de carpeta / Backspace)\n• ventana:minimizar_todas  (Esconde todo el espacio de trabajo)\n• ventana:restaurar_todas  (Recupera todas las ventanas minimizadas)\n• ventana:escritorio       (Muestra u oculta el escritorio - Toggle)\n\n[ GUÍA AVANZADA DE COMANDOS ]\n\n1. MACROS (Prefijo \"macro:\")\nEncadena varias acciones separadas por \"|\". \nEjemplo: macro:https://gmail.com | esperar:2.0 | teclas:ctrl,t\n• esperar:X.X   (Pausa en segundos)\n• teclas:X,Y    (Combinaciones de teclado)\n\n2. GESTIÓN DE VENTANAS (Atajos de sistema)\nPuedes usar el prefijo \"teclas:\" para mover ventanas entre monitores:\n• Mover a izq:  teclas:win,shift,left\n• Mover a der:  teclas:win,shift,right\n• Maximizar:    teclas:win,up\n• Minimizar:    teclas:win,down\n\n======================================================================"
   }
 }

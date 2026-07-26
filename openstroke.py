@@ -1097,7 +1097,7 @@ class OpenStrokeApp:
         from tkinter import ttk
 
         self.ventana_acerca = tk.Toplevel(self.root)
-        self.ventana_acerca.title("Acerca de OpenStroke")
+        self.ventana_acerca.title(self.i18n.t("acerca.titulo", "Acerca de OpenStroke"))
         self.ventana_acerca.geometry("500x450")
         self.ventana_acerca.attributes("-topmost", True)
         self.ventana_acerca.configure(bg="#f0f0f0")
@@ -1171,6 +1171,16 @@ class OpenStrokeApp:
         self.root.destroy()
         os._exit(0)
 
+    def actualizar_idioma(self, nuevo_codigo):
+        self.idioma = nuevo_codigo
+        if hasattr(self, 'i18n') and self.i18n:
+            self.i18n.cargar_idioma(nuevo_codigo)
+        if hasattr(self, 'icon') and self.icon:
+            try:
+                self.icon.update_menu()
+            except Exception:
+                pass
+
 
 if __name__ == "__main__":
     # ==========================================
@@ -1193,9 +1203,9 @@ if __name__ == "__main__":
     # ARRANQUE Y CHIVATO DE DEPURACIÓN
     # ==========================================
     if MODO_DEBUG:
-        print("🐛 [BUILD 2026.07.26] Iniciando OpenStroke v0.5 en MODO DEPURACIÓN...")
+        print("🐛 [BUILD 2026.07.26] Iniciando OpenStroke v0.5.0.0.1 en MODO DEPURACIÓN...")
         print("🐛 El motor geométrico mostrará sus cálculos en la consola.")
     else:
-        print("Iniciando OpenStroke v0.5 Build 2026.07.26....")
+        print("Iniciando OpenStroke v0.5.0.0.1 Build 2026.07.26....")
 
     app = OpenStrokeApp()

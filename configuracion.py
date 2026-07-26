@@ -229,6 +229,7 @@ class VentanaConfiguracion:
 
         self.ven_grabar_activa = tk.Toplevel(self.ventana)
         ven_grabar = self.ven_grabar_activa  # Referencia corta para no cambiar el resto del código
+        ven_grabar.title(self.t("grabadora.titulo", "Grabar Nueva Forma"))
 
         # ==========================================
         # ESTÉTICA: Icono de la Grabadora
@@ -239,7 +240,6 @@ class VentanaConfiguracion:
             pass
         # ==========================================
 
-
         ven_grabar.attributes("-topmost", True)
 
         def al_cerrar_grabar():
@@ -249,7 +249,7 @@ class VentanaConfiguracion:
         ven_grabar.protocol("WM_DELETE_WINDOW", al_cerrar_grabar)
 
         tk.Label(ven_grabar,
-                 text="Dibuja UNA SOLA LÍNEA continua.\nAl soltar el ratón, verás la lectura del motor en bucle.",
+                 text=self.t("grabadora.instrucciones", "Dibuja UNA SOLA LÍNEA continua.\nAl soltar el ratón, verás la lectura del motor en bucle."),
                  font=("Arial", 10, "bold")).pack(pady=10)
         lienzo = tk.Canvas(ven_grabar, bg="#e8f4f8", cursor="crosshair")
         lienzo.pack(fill=tk.BOTH, expand=True, padx=20, pady=5)
@@ -260,7 +260,7 @@ class VentanaConfiguracion:
         frame_guardar = tk.Frame(ven_grabar)
         frame_guardar.pack(fill=tk.X, padx=20, pady=10)
 
-        tk.Label(frame_guardar, text="Nombre:", font=("Arial", 10, "bold")).pack(side=tk.LEFT)
+        tk.Label(frame_guardar, text=self.t("grabadora.nombre", "Nombre:"), font=("Arial", 10, "bold")).pack(side=tk.LEFT)
         entry_nombre = tk.Entry(frame_guardar, font=("Arial", 10), justify="center")
         entry_nombre.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=10)
         # --- AÑADE ESTO AQUÍ ---
@@ -337,7 +337,7 @@ class VentanaConfiguracion:
         def al_soltar(event):
             self.trazo_limpio_actual = self.app.motor.procesar_trazo(puntos_grabados)
             if not self.trazo_limpio_actual:
-                messagebox.showwarning("Aviso", "Trazo muy corto.", parent=ven_grabar)
+                messagebox.showwarning("Aviso", self.t("grabadora.aviso_corto", "Trazo muy corto."), parent=ven_grabar)
                 return
 
             lienzo.delete("all")
@@ -362,9 +362,9 @@ class VentanaConfiguracion:
         def guardar_forma():
             nombre = entry_nombre.get().strip().upper()
             if not nombre:
-                return messagebox.showwarning("Aviso", "Ponle un nombre a la forma.", parent=ven_grabar)
+                return messagebox.showwarning("Aviso", self.t("grabadora.aviso_nombre", "Ponle un nombre a la forma."), parent=ven_grabar)
             if not self.trazo_limpio_actual:
-                return messagebox.showwarning("Aviso", "Dibuja un trazo primero.", parent=ven_grabar)
+                return messagebox.showwarning("Aviso", self.t("grabadora.aviso_trazo", "Dibuja un trazo primero."), parent=ven_grabar)
 
             if hasattr(self, 'id_anim_grabar'): lienzo.after_cancel(self.id_anim_grabar)
             self.app.plantillas[nombre] = self.trazo_limpio_actual
@@ -386,7 +386,7 @@ class VentanaConfiguracion:
             al_cerrar_grabar()
 
 
-        tk.Button(frame_guardar, text="💾 Guardar", bg="#4CAF50", fg="white", font=("Arial", 9, "bold"),
+        tk.Button(frame_guardar, text=self.t("grabadora.btn_guardar", "💾 Guardar Forma"), bg="#4CAF50", fg="white", font=("Arial", 9, "bold"),
                   command=guardar_forma).pack(side=tk.RIGHT)
 
         lienzo.bind("<ButtonPress-1>", al_presionar)
@@ -408,7 +408,7 @@ class VentanaConfiguracion:
         # Si cierras la configuración, esta se cerrará automáticamente.
         self.ven_guia_activa = tk.Toplevel(self.ventana)
         ven_guia = self.ven_guia_activa
-        ven_guia.title("📚 Guía de Comandos")
+        ven_guia.title(self.t("guia.titulo", "📚 Guía de Comandos"))
 
         # ==========================================
         # ESTÉTICA: Icono de la Guía
@@ -429,62 +429,7 @@ class VentanaConfiguracion:
         ven_guia.protocol("WM_DELETE_WINDOW", al_cerrar_guia)
         ven_guia.attributes("-topmost", True)
 
-        texto_guia = """
-    ======================================================================
-                      GUÍA DE COMANDOS DE OPENSTROKE
-    ======================================================================
-
-    1. PROGRAMAS Y ARCHIVOS (Por defecto)
-    Escribe el nombre del ejecutable o la ruta nativa del archivo.
-    • notepad
-    • calc
-    • chrome.exe https://google.es
-    • C:\\Windows\\System32
-
-    2. ATAJOS DE TECLADO (Prefijo "teclas:")
-    Simula la pulsación física de un acorde de teclas en el sistema.
-    • teclas:ctrl,c            (Copiar)
-    • teclas:ctrl,v            (Pegar)
-    • teclas:shift,win,left    (Mover ventana al monitor izquierdo)
-    • teclas:f5                (Actualizar página)
-    
-        [ TECLAS ESPECIALES DISPONIBLES ]
-        • Modificadores: win, windows, ctrl, shift, alt
-        • Función:       f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12
-        • Sistema:       enter, space, tab, esc
-        • Direccionales: up, down, left, right
-    
-    3. VENTANAS NATIVAS (Prefijo "ventana:")
-    Manipula el entorno de escritorio y la ventana que esté en primer plano.
-    • ventana:minimizar        (Minimiza la ventana actual y la guarda en memoria)
-    • ventana:maximizar        (Maximiza o restaura la ventana actual)
-    • ventana:restaurar_una    (Rescata la última ventana minimizada por OpenStroke)
-    • ventana:cerrar           (Cierra la ventana activa - Alt+F4)
-    • ventana:fijar            (Mantiene la ventana siempre al frente)
-    • ventana:transparente     (Aplica un efecto fantasma al 50%)
-    • ventana:siguiente        (Salto rápido a la siguiente ventana)
-    • ventana:atras            (Salto inverso a la ventana anterior)
-    • ventana:arriba           (Sube un nivel de carpeta / Backspace)
-    • ventana:minimizar_todas  (Esconde todo el espacio de trabajo)
-    • ventana:restaurar_todas  (Recupera todas las ventanas minimizadas)
-    • ventana:escritorio       (Muestra u oculta el escritorio - Toggle)
-
-    [ GUÍA AVANZADA DE COMANDOS ]
-
-    1. MACROS (Prefijo "macro:")
-    Encadena varias acciones separadas por "|". 
-    Ejemplo: macro:https://gmail.com | esperar:2.0 | teclas:ctrl,t
-    • esperar:X.X   (Pausa en segundos)
-    • teclas:X,Y    (Combinaciones de teclado)
-
-    2. GESTIÓN DE VENTANAS (Atajos de sistema)
-    Puedes usar el prefijo "teclas:" para mover ventanas entre monitores:
-    • Mover a izq:  teclas:win,shift,left
-    • Mover a der:  teclas:win,shift,right
-    • Maximizar:    teclas:win,up
-    • Minimizar:    teclas:win,down
-    
-    ======================================================================"""
+        texto_guia = self.t("guia.texto")
 
         txt = tk.Text(ven_guia, font=("Consolas", 10), bg="#2d2d2d", fg="#a9b7c6", padx=15, pady=15)
         txt.insert(tk.END, texto_guia)
@@ -528,53 +473,124 @@ class VentanaConfiguracion:
 
 
 
+    def t(self, clave, default=None):
+        if hasattr(self.app, 'i18n') and self.app.i18n:
+            return self.app.i18n.t(clave, default)
+        return default if default is not None else clave
+
+    def actualizar_textos_interfaz(self):
+        """Actualiza dinámicamente todos los textos y títulos de la interfaz de ajustes"""
+        if not hasattr(self, 'ventana') or not self.ventana.winfo_exists():
+            return
+
+        self.ventana.title(self.t("ajustes.titulo", "Ajustes de OpenStroke v0.5.0.0.1"))
+
+        if hasattr(self, 'notebook'):
+            self.notebook.tab(self.tab_atajos, text=self.t("ajustes.pestanas.atajos", "🚀 Atajos y Config"))
+            self.notebook.tab(self.tab_plantillas, text=self.t("ajustes.pestanas.plantillas", "📐 Gestor Plantillas"))
+            self.notebook.tab(self.tab_colores, text=self.t("ajustes.pestanas.colores", "🎨 Colores"))
+            self.notebook.tab(self.tab_preferencias, text=self.t("ajustes.pestanas.preferencias", "⚙️ Preferencias"))
+
+        if hasattr(self, 'btn_guardar'):
+            self.btn_guardar.config(text=self.t("ajustes.btn_guardar_cerrar", "Guardar y Cerrar"))
+        if hasattr(self, 'btn_cancelar'):
+            self.btn_cancelar.config(text=self.t("ajustes.btn_cancelar", "Cancelar"))
+        if hasattr(self, 'btn_aplicar'):
+            self.btn_aplicar.config(text=self.t("ajustes.btn_aplicar", "Aplicar"))
+        if hasattr(self, 'btn_reset'):
+            self.btn_reset.config(text=self.t("ajustes.btn_reset", "🔄 Reset"))
+        if hasattr(self, 'btn_grabar'):
+            self.btn_grabar.config(text=self.t("ajustes.btn_grabar_forma", "✏️ Grabar Forma"))
+
+        if hasattr(self, 'chk_arranque'):
+            self.chk_arranque.config(text=self.t("ajustes.preferencias.arranque", "Arrancar OpenStroke con Windows"))
+        if hasattr(self, 'chk_jedi'):
+            self.chk_jedi.config(text=self.t("ajustes.preferencias.jedi", "Poderes Jedi (Manipular ventanas con clic derecho)"))
+        if hasattr(self, 'chk_splash'):
+            self.chk_splash.config(text=self.t("ajustes.preferencias.splash", "Mostrar Pantalla de Carga (Splash Screen) al iniciar"))
+
+        if hasattr(self, 'frame_idioma'):
+            self.frame_idioma.config(text=self.t("ajustes.preferencias.sector_idioma", "🌐 Idioma / Language"))
+        if hasattr(self, 'lbl_idioma'):
+            self.lbl_idioma.config(text=self.t("ajustes.idioma_label", "Seleccionar Idioma / Select Language:"))
+
+        if hasattr(self, 'frame_apariencia'):
+            self.frame_apariencia.config(text=self.t("ajustes.preferencias.sector_apariencia", "🎨 Apariencia del Trazo"))
+        if hasattr(self, 'lbl_grosor'):
+            self.lbl_grosor.config(text=self.t("ajustes.preferencias.grosor", "Grosor de la Línea:"))
+        if hasattr(self, 'lbl_borde'):
+            self.lbl_borde.config(text=self.t("ajustes.preferencias.borde", "Aura de Alto Contraste (Borde):"))
+
+        if hasattr(self, 'lbl_tolerancia'):
+            self.lbl_tolerancia.config(text=self.t("ajustes.preferencias.tolerancia", "Tolerancia (%):"))
+        if hasattr(self, 'lbl_tiempo'):
+            self.lbl_tiempo.config(text=self.t("ajustes.preferencias.tiempo_maximo", "Tiempo(s):"))
+
+        if hasattr(self, 'lbl_app_activa'):
+            self.lbl_app_activa.config(text=self.t("ajustes.app_activa.label", "App Activa:"))
+        if hasattr(self, 'refrescar_combo_contexto'):
+            self.refrescar_combo_contexto()
+
+        if hasattr(self, 'tree_gestos'):
+            self.tree_gestos.heading("forma", text=self.t("ajustes.tabla.col_forma", "Forma / Gesto"))
+            self.tree_gestos.heading("capa", text=self.t("ajustes.tabla.col_capa", "Tecla / Capa"))
+            self.tree_gestos.heading("comando", text=self.t("ajustes.tabla.col_comando", "Acción / Comando"))
+
+        if hasattr(self, 'lbl_gestor_plantillas'):
+            self.lbl_gestor_plantillas.config(text=self.t("ajustes.gestor_plantillas.subtitulo", "Gestiona las formas geométricas del motor."))
+        if hasattr(self, 'btn_regrabar'):
+            self.btn_regrabar.config(text=self.t("ajustes.gestor_plantillas.btn_regrabar", "Regrabar 🔄"))
+        if hasattr(self, 'btn_renombrar'):
+            self.btn_renombrar.config(text=self.t("ajustes.gestor_plantillas.btn_renombrar", "Renombrar ✏️"))
+        if hasattr(self, 'btn_eliminar'):
+            self.btn_eliminar.config(text=self.t("ajustes.gestor_plantillas.btn_eliminar", "Eliminar 🗑️"))
+
+        if hasattr(self, 'labels_colores'):
+            for clave_interna, label_widget in self.labels_colores.items():
+                label_widget.config(text=self.t(f"ajustes.colores.{clave_interna}", clave_interna))
+
     def construir_interfaz(self):
         frame_botones = tk.Frame(self.ventana, bg="#dcdcdc", pady=10)
         frame_botones.pack(side=tk.BOTTOM, fill=tk.X)
 
-        tk.Button(frame_botones, text="Guardar y Cerrar", bg="#4CAF50", fg="white", font=("Arial", 9, "bold"),
-                  command=self.btn_guardar_cerrar).pack(side=tk.RIGHT, padx=10)
-        tk.Button(frame_botones, text="Cancelar", bg="#f44336", fg="white", command=self.al_cerrar_x).pack(
-            side=tk.RIGHT, padx=5)
-        tk.Button(frame_botones, text="Aplicar", bg="#2196F3", fg="white", command=self.btn_aplicar).pack(side=tk.RIGHT,
-                                                                                                          padx=5)
+        self.btn_guardar = tk.Button(frame_botones, text=self.t("ajustes.btn_guardar_cerrar", "Guardar y Cerrar"), bg="#4CAF50", fg="white", font=("Arial", 9, "bold"),
+                  command=self.btn_guardar_cerrar)
+        self.btn_guardar.pack(side=tk.RIGHT, padx=10)
+        
+        self.btn_cancelar = tk.Button(frame_botones, text=self.t("ajustes.btn_cancelar", "Cancelar"), bg="#f44336", fg="white", command=self.al_cerrar_x)
+        self.btn_cancelar.pack(side=tk.RIGHT, padx=5)
 
-        # ==========================================
-        # NUEVO: El botón de RESET
-        # ==========================================
+        self.btn_aplicar = tk.Button(frame_botones, text=self.t("ajustes.btn_aplicar", "Aplicar"), bg="#2196F3", fg="white", command=self.btn_aplicar)
+        self.btn_aplicar.pack(side=tk.RIGHT, padx=5)
+
         def btn_reset_ajustes():
-            if messagebox.askyesno("Resetear Ajustes", "¿Volver a los valores por defecto del motor de dibujo?",
+            if messagebox.askyesno(self.t("ajustes.btn_reset", "Resetear Ajustes"), "¿Volver a los valores por defecto del motor de dibujo?",
                                    parent=self.ventana):
-                self.escala_grosor.set(3)  # Grosor por defecto
-                self.escala_tolerancia.set(25)  # 25% de tolerancia
+                self.escala_grosor.set(3)
+                self.escala_tolerancia.set(25)
                 self.entry_tiempo.delete(0, tk.END)
-                self.entry_tiempo.insert(0, "1.5")  # 1.5 segundos
+                self.entry_tiempo.insert(0, "1.5")
                 self.var_arranque.set(False)
                 self.var_jedi.set(True)
-                actualizar_preview_grosor()  # Actualizamos el visor visual
+                actualizar_preview_apariencia()
 
-        tk.Button(frame_botones, text="🔄 Reset", bg="#FF9800", fg="white", command=btn_reset_ajustes).pack(side=tk.LEFT,
-                                                                                                           padx=10)
-        # ==========================================
+        self.btn_reset = tk.Button(frame_botones, text=self.t("ajustes.btn_reset", "🔄 Reset"), bg="#FF9800", fg="white", command=btn_reset_ajustes)
+        self.btn_reset.pack(side=tk.LEFT, padx=10)
 
-        notebook = ttk.Notebook(self.ventana)
+        self.notebook = ttk.Notebook(self.ventana)
+        self.notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
 
-        notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=5)
+        self.tab_atajos = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_atajos, text=self.t("ajustes.pestanas.atajos", "🚀 Atajos y Config"))
 
-        # ==========================================
-        # NACIMIENTO DE LAS 4 PESTAÑAS
-        # ==========================================
-        tab_atajos = ttk.Frame(notebook)
-        notebook.add(tab_atajos, text="🚀 Atajos y Config")
+        self.tab_plantillas = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_plantillas, text=self.t("ajustes.pestanas.plantillas", "📐 Gestor Plantillas"))
 
-        tab_plantillas = ttk.Frame(notebook)
-        notebook.add(tab_plantillas, text="📐 Gestor Plantillas")
+        self.tab_colores = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_colores, text=self.t("ajustes.pestanas.colores", "🎨 Colores"))
 
-        tab_colores = ttk.Frame(notebook)
-        notebook.add(tab_colores, text="🎨 Colores")
-
-        tab_preferencias = ttk.Frame(notebook)
-        notebook.add(tab_preferencias, text="⚙️ Preferencias")
+        self.tab_preferencias = ttk.Frame(self.notebook)
+        self.notebook.add(self.tab_preferencias, text=self.t("ajustes.pestanas.preferencias", "⚙️ Preferencias"))
 
         # ==========================================
         # RESTAURACIÓN: Contenido de la Pestaña COLORES
@@ -586,23 +602,18 @@ class VentanaConfiguracion:
                 "ctrl": "#00FF00", "shift": "#0000FF", "alt": "#FF9800", "space": "#FFFF00"
             }
 
-        frame_colores = tk.Frame(tab_colores, padx=20, pady=20)
+        frame_colores = tk.Frame(self.tab_colores, padx=20, pady=20)
         frame_colores.pack(fill=tk.BOTH, expand=True)
 
         def cambiar_color(clave, boton_visual):
-            # Semáforo para evitar que se abran múltiples ventanas de color a la vez
             if getattr(self.app, 'dialogo_color_abierto', False):
                 return
-
             self.app.dialogo_color_abierto = True
             color_actual = self.app.colores.get(clave, "#FFFFFF")
-            # Necesitas tener 'from tkinter import colorchooser' arriba del todo
             _, nuevo_hex = colorchooser.askcolor(title=f"Elige color para {clave}", initialcolor=color_actual)
-
             if nuevo_hex:
                 self.app.colores[clave] = nuevo_hex
                 boton_visual.config(bg=nuevo_hex)
-
             self.app.dialogo_color_abierto = False
 
         nombres_colores = [
@@ -613,85 +624,96 @@ class VentanaConfiguracion:
             ("Tecla Alt", "alt"), ("Espaciadora", "space")
         ]
 
-        # El truco matemático de la cuadrícula para alinear los botones
+        self.labels_colores = {}
         for i, (nombre_bonito, clave_interna) in enumerate(nombres_colores):
             fila = i // 2
             columna_base = (i % 2) * 2
 
-            tk.Label(frame_colores, text=nombre_bonito, font=("Arial", 9, "bold")).grid(row=fila, column=columna_base,
-                                                                                        pady=10, sticky="w")
+            lbl_col = tk.Label(frame_colores, text=self.t(f"ajustes.colores.{clave_interna}", nombre_bonito), font=("Arial", 9, "bold"))
+            lbl_col.grid(row=fila, column=columna_base, pady=10, sticky="w")
+            self.labels_colores[clave_interna] = lbl_col
 
             color_guardado = self.app.colores.get(clave_interna, "#FFFFFF")
             btn_color = tk.Button(frame_colores, width=6, bg=color_guardado, relief="ridge", cursor="hand2")
             btn_color.config(command=lambda c=clave_interna, b=btn_color: cambiar_color(c, b))
             btn_color.grid(row=fila, column=columna_base + 1, padx=(10, 30), pady=10)
-        # ==========================================
 
         # ==========================================
         # CONTENIDO DE LA PESTAÑA PREFERENCIAS
         # ==========================================
-        frame_pref = tk.Frame(tab_preferencias, padx=20, pady=20)
+        frame_pref = tk.Frame(self.tab_preferencias, padx=20, pady=20)
         frame_pref.pack(fill=tk.BOTH, expand=True)
 
         self.var_arranque = tk.BooleanVar(value=getattr(self.app, 'arranque_automatico', False))
-        tk.Checkbutton(frame_pref, text="Arrancar OpenStroke con Windows", variable=self.var_arranque,
-                       font=("Arial", 10, "bold")).pack(anchor="w", pady=10)
+        self.chk_arranque = tk.Checkbutton(frame_pref, text=self.t("ajustes.preferencias.arranque", "Arrancar OpenStroke con Windows"), variable=self.var_arranque,
+                       font=("Arial", 10, "bold"))
+        self.chk_arranque.pack(anchor="w", pady=10)
 
         self.var_jedi = tk.BooleanVar(value=getattr(self.app, 'poderes_jedi', True))
-        tk.Checkbutton(frame_pref, text="Poderes Jedi (Manipular ventanas con clic derecho)", variable=self.var_jedi,
-                       font=("Arial", 10, "bold"), fg="#FF5722").pack(anchor="w", pady=10)
+        self.chk_jedi = tk.Checkbutton(frame_pref, text=self.t("ajustes.preferencias.jedi", "Poderes Jedi (Manipular ventanas con clic derecho)"), variable=self.var_jedi,
+                       font=("Arial", 10, "bold"), fg="#FF5722")
+        self.chk_jedi.pack(anchor="w", pady=10)
 
         self.var_splash = tk.BooleanVar(value=getattr(self.app, 'mostrar_splash', False))
-        tk.Checkbutton(frame_pref, text="Mostrar Pantalla de Carga (Splash Screen) al iniciar",
-                       variable=self.var_splash, font=("Arial", 10, "bold"), fg="#2196F3").pack(anchor="w", pady=10)
+        self.chk_splash = tk.Checkbutton(frame_pref, text=self.t("ajustes.preferencias.splash", "Mostrar Pantalla de Carga (Splash Screen) al iniciar"),
+                       variable=self.var_splash, font=("Arial", 10, "bold"), fg="#2196F3")
+        self.chk_splash.pack(anchor="w", pady=10)
 
         # ==========================================
         # SECTOR MULTI-IDIOMA (i18n)
         # ==========================================
-        frame_idioma = tk.LabelFrame(frame_pref, text="🌐 Idioma / Language", font=("Arial", 10, "bold"), padx=15, pady=10)
-        frame_idioma.pack(fill=tk.X, pady=10)
+        self.frame_idioma = tk.LabelFrame(frame_pref, text=self.t("ajustes.preferencias.sector_idioma", "🌐 Idioma / Language"), font=("Arial", 10, "bold"), padx=15, pady=10)
+        self.frame_idioma.pack(fill=tk.X, pady=10)
 
-        tk.Label(frame_idioma, text="Seleccionar Idioma / Select Language:", font=("Arial", 9)).pack(side=tk.LEFT, padx=5)
+        self.lbl_idioma = tk.Label(self.frame_idioma, text=self.t("ajustes.idioma_label", "Seleccionar Idioma / Select Language:"), font=("Arial", 9))
+        self.lbl_idioma.pack(side=tk.LEFT, padx=5)
 
-        self.combo_idioma = ttk.Combobox(frame_idioma, state="readonly", width=25)
+        self.combo_idioma = ttk.Combobox(self.frame_idioma, state="readonly", width=25)
         
-        # Escaneamos idiomas disponibles a través del GestorIdiomas de la app
         idiomas_map = getattr(getattr(self.app, 'i18n', None), 'idiomas_disponibles', {'es': 'Español', 'en': 'English'})
         self.mapa_codigos_idioma = {v: k for k, v in idiomas_map.items()}
         self.combo_idioma['values'] = list(idiomas_map.values())
 
-        # Seleccionar idioma actual
         codigo_actual = getattr(self.app, 'idioma', 'es')
         nombre_actual = idiomas_map.get(codigo_actual, "Español")
         self.combo_idioma.set(nombre_actual)
         self.combo_idioma.pack(side=tk.LEFT, padx=10)
 
-        # ==========================================
-        # NUEVA ZONA: APARIENCIA DEL TRAZO
-        # ==========================================
-        frame_apariencia = tk.LabelFrame(frame_pref, text="🎨 Apariencia del Trazo", font=("Arial", 10, "bold"), padx=15,
-                                         pady=10)
-        frame_apariencia.pack(fill=tk.X, pady=15)
+        def al_cambiar_idioma(event=None):
+            nombre_sel = self.combo_idioma.get()
+            codigo_sel = self.mapa_codigos_idioma.get(nombre_sel, 'es')
+            if hasattr(self.app, 'actualizar_idioma'):
+                self.app.actualizar_idioma(codigo_sel)
+            else:
+                self.app.idioma = codigo_sel
+                if hasattr(self.app, 'i18n'):
+                    self.app.i18n.cargar_idioma(codigo_sel)
+            self.actualizar_textos_interfaz()
 
-        # Deslizador de Grosor Principal
-        tk.Label(frame_apariencia, text="Grosor de la Línea:", font=("Arial", 9)).grid(row=0, column=0, sticky="e",
-                                                                                       pady=5)
-        self.escala_grosor = tk.Scale(frame_apariencia, from_=1, to=15, orient="horizontal", length=150, showvalue=0)
+        self.combo_idioma.bind("<<ComboboxSelected>>", al_cambiar_idioma)
+
+        # ==========================================
+        # SECTOR APARIENCIA DEL TRAZO
+        # ==========================================
+        self.frame_apariencia = tk.LabelFrame(frame_pref, text=self.t("ajustes.preferencias.sector_apariencia", "🎨 Apariencia del Trazo"), font=("Arial", 10, "bold"), padx=15,
+                                         pady=10)
+        self.frame_apariencia.pack(fill=tk.X, pady=15)
+
+        self.lbl_grosor = tk.Label(self.frame_apariencia, text=self.t("ajustes.preferencias.grosor", "Grosor de la Línea:"), font=("Arial", 9))
+        self.lbl_grosor.grid(row=0, column=0, sticky="e", pady=5)
+        self.escala_grosor = tk.Scale(self.frame_apariencia, from_=1, to=15, orient="horizontal", length=150, showvalue=0)
         self.escala_grosor.set(self.app.grosor_linea)
         self.escala_grosor.grid(row=0, column=1, padx=10)
 
-        # Deslizador del Borde Blanco
-        tk.Label(frame_apariencia, text="Aura Blanca (0 = Apagado):", font=("Arial", 9)).grid(row=1, column=0,
-                                                                                              sticky="e", pady=5)
-        self.escala_borde = tk.Scale(frame_apariencia, from_=0, to=12, orient="horizontal", length=150, showvalue=0)
+        self.lbl_borde = tk.Label(self.frame_apariencia, text=self.t("ajustes.preferencias.borde", "Aura de Alto Contraste (Borde):"), font=("Arial", 9))
+        self.lbl_borde.grid(row=1, column=0, sticky="e", pady=5)
+        self.escala_borde = tk.Scale(self.frame_apariencia, from_=0, to=12, orient="horizontal", length=150, showvalue=0)
         self.escala_borde.set(getattr(self.app, 'grosor_borde', 6))
         self.escala_borde.grid(row=1, column=1, padx=10)
 
-        # El Visor Holográfico Oscuro
-        self.canvas_preview = tk.Canvas(frame_apariencia, width=80, height=50, bg="#282C34", highlightthickness=0)
+        self.canvas_preview = tk.Canvas(self.frame_apariencia, width=80, height=50, bg="#282C34", highlightthickness=0)
         self.canvas_preview.grid(row=0, column=2, rowspan=2, padx=30)
 
-        # Primero el borde blanco por debajo, luego el trazo magenta por encima
         g_linea = self.app.grosor_linea
         g_borde = getattr(self.app, 'grosor_borde', 6)
         self.borde_preview = self.canvas_preview.create_line(10, 25, 70, 25, fill="#FEFEFE", width=g_linea + g_borde,
@@ -710,44 +732,50 @@ class VentanaConfiguracion:
 
         self.escala_grosor.config(command=actualizar_preview_apariencia)
         self.escala_borde.config(command=actualizar_preview_apariencia)
-        # ==========================================
-
 
         # ==========================================
         # --- PESTAÑA 1 (ATAJOS) REDISEÑADA ---
-        frame_top = tk.Frame(tab_atajos)
+        frame_top = tk.Frame(self.tab_atajos)
         frame_top.pack(fill=tk.X, pady=15, padx=10)
 
-        tk.Label(frame_top, text="Tolerancia (%):", font=("Arial", 9, "bold")).pack(side=tk.LEFT, padx=(5, 0))
+        self.lbl_tolerancia = tk.Label(frame_top, text=self.t("ajustes.preferencias.tolerancia", "Tolerancia (%):"), font=("Arial", 9, "bold"))
+        self.lbl_tolerancia.pack(side=tk.LEFT, padx=(5, 0))
         self.escala_tolerancia = tk.Scale(frame_top, from_=10, to=60, orient="horizontal", length=120)
         self.escala_tolerancia.set(int(self.app.umbral_tolerancia * 100))
         self.escala_tolerancia.pack(side=tk.LEFT, padx=5)
 
-        tk.Label(frame_top, text="Tiempo(s):", font=("Arial", 9, "bold")).pack(side=tk.LEFT, padx=(20, 0))
+        self.lbl_tiempo = tk.Label(frame_top, text=self.t("ajustes.preferencias.tiempo_maximo", "Tiempo(s):"), font=("Arial", 9, "bold"))
+        self.lbl_tiempo.pack(side=tk.LEFT, padx=(20, 0))
         self.entry_tiempo = tk.Entry(frame_top, justify="center", width=6)
         self.entry_tiempo.insert(0, str(self.app.tiempo_maximo_s))
         self.entry_tiempo.pack(side=tk.LEFT)
 
-        tk.Button(frame_top, text="✏️ Grabar Forma", bg="#9c27b0", fg="white", font=("Arial", 9, "bold"),
-                  command=self.abrir_ventana_grabacion).pack(side=tk.RIGHT, padx=5)
+        self.btn_grabar = tk.Button(frame_top, text=self.t("ajustes.btn_grabar_forma", "✏️ Grabar Forma"), bg="#9c27b0", fg="white", font=("Arial", 9, "bold"),
+                  command=self.abrir_ventana_grabacion)
+        self.btn_grabar.pack(side=tk.RIGHT, padx=5)
 
-        tk.Frame(tab_atajos, height=2, bd=1, relief=tk.SUNKEN).pack(fill=tk.X, pady=5)
+        tk.Frame(self.tab_atajos, height=2, bd=1, relief=tk.SUNKEN).pack(fill=tk.X, pady=5)
         # --- FIN DEL REDISEÑO DE PESTAÑAS ---
 
         # --- SECCIÓN: APP ACTIVA ---
-        frame_contexto = tk.Frame(tab_atajos)
+        frame_contexto = tk.Frame(self.tab_atajos)
         frame_contexto.pack(fill=tk.X, pady=2)
-        tk.Label(frame_contexto, text="App Activa:", font=("Arial", 10, "bold"), fg="#2196F3").pack(side=tk.LEFT)
+        self.lbl_app_activa = tk.Label(frame_contexto, text=self.t("ajustes.app_activa.label", "App Activa:"), font=("Arial", 10, "bold"), fg="#2196F3")
+        self.lbl_app_activa.pack(side=tk.LEFT)
 
         self.combo_contexto = ttk.Combobox(frame_contexto, state="readonly", justify="center", font=("Arial", 10))
 
         def refrescar_combo():
-            self.combo_contexto['values'] = ["GLOBAL", "EXCEPCIONES", "MODO SIGILO"] + [a for a in
-                                                                                        self.app.gestos_app.keys() if
-                                                                                        a != "GLOBAL"]
+            val_g = self.t("ajustes.app_activa.global", "GLOBAL")
+            val_e = self.t("ajustes.app_activa.excepciones", "EXCEPCIONES")
+            val_s = self.t("ajustes.app_activa.sigilo", "MODO SIGILO")
+            self.combo_contexto['values'] = [val_g, val_e, val_s] + [a for a in
+                                                                       self.app.gestos_app.keys() if
+                                                                       a != "GLOBAL"]
 
+        self.refrescar_combo_contexto = refrescar_combo
         refrescar_combo()
-        self.combo_contexto.set("GLOBAL")
+        self.combo_contexto.set(self.t("ajustes.app_activa.global", "GLOBAL"))
         self.combo_contexto.pack(side=tk.LEFT, padx=5, fill=tk.X, expand=True)
 
         def btn_nueva_app():
@@ -867,7 +895,7 @@ class VentanaConfiguracion:
         self.combo_contexto.bind("<<ComboboxSelected>>", al_cambiar_contexto)
 
         # --- SECCIÓN: NUEVO GESTO / ACORDES ---
-        frame_gestos = tk.Frame(tab_atajos)
+        frame_gestos = tk.Frame(self.tab_atajos)
         frame_gestos.pack(pady=10)
 
         tk.Label(frame_gestos, text="Capa / Botón", font=("Arial", 8, "bold")).grid(row=0, column=0)
@@ -1073,7 +1101,7 @@ class VentanaConfiguracion:
         estilo.map('TCombobox', fieldbackground=[('readonly', 'white')], selectbackground=[('readonly', '#0078D7')])
         # ==========================================
 
-        frame_lista = tk.Frame(tab_atajos)
+        frame_lista = tk.Frame(self.tab_atajos)
         frame_lista.pack(fill=tk.BOTH, expand=True, pady=5)
 
         columnas = ("forma", "capa", "comando")
@@ -1099,10 +1127,10 @@ class VentanaConfiguracion:
             self.direcciones_orden[col] = not reverso
 
         # 4. Asignamos los comandos UNA SOLA VEZ para no marear al recolector de basura de Tkinter
-        self.tree_gestos.heading("forma", text="Forma / Gesto",
+        self.tree_gestos.heading("forma", text=self.t("ajustes.tabla.col_forma", "Forma / Gesto"),
                                  command=lambda: ordenar_columna(self.tree_gestos, "forma"))
-        self.tree_gestos.heading("capa", text="Tecla / Capa", command=lambda: ordenar_columna(self.tree_gestos, "capa"))
-        self.tree_gestos.heading("comando", text="Acción / Comando",
+        self.tree_gestos.heading("capa", text=self.t("ajustes.tabla.col_capa", "Tecla / Capa"), command=lambda: ordenar_columna(self.tree_gestos, "capa"))
+        self.tree_gestos.heading("comando", text=self.t("ajustes.tabla.col_comando", "Acción / Comando"),
                                  command=lambda: ordenar_columna(self.tree_gestos, "comando"))
 
         # ==========================================
@@ -1213,8 +1241,9 @@ class VentanaConfiguracion:
         # ==========================================
 
         # --- PESTAÑA 2: GESTOR DE PLANTILLAS ---
-        tk.Label(tab_plantillas, text="Gestiona las formas geométricas del motor.", pady=10).pack()
-        frame_lista_plan = tk.Frame(tab_plantillas)
+        self.lbl_gestor_plantillas = tk.Label(self.tab_plantillas, text=self.t("ajustes.gestor_plantillas.subtitulo", "Gestiona las formas geométricas del motor."), pady=10)
+        self.lbl_gestor_plantillas.pack()
+        frame_lista_plan = tk.Frame(self.tab_plantillas)
         frame_lista_plan.pack(fill=tk.BOTH, expand=True, padx=20, pady=5)
         self.listbox_plantillas = tk.Listbox(frame_lista_plan, font=("Consolas", 11), justify="center")
         self.listbox_plantillas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -1224,9 +1253,14 @@ class VentanaConfiguracion:
 
         def renombrar():
             sel = self.listbox_plantillas.curselection()
-            if not sel: return
+            if not sel:
+                tit = self.t("ajustes.gestor_plantillas.popup_aviso_titulo", "Aviso")
+                msg = self.t("ajustes.gestor_plantillas.popup_renombrar_aviso", "Selecciona una plantilla de la lista para renombrar.")
+                return messagebox.showwarning(tit, msg, parent=self.ventana)
             viejo = self.listbox_plantillas.get(sel[0])
-            nuevo = simpledialog.askstring("Renombrar", f"Nuevo nombre para '{viejo}':", initialvalue=viejo)
+            tit = self.t("ajustes.gestor_plantillas.popup_renombrar_titulo", "Renombrar")
+            prompt = self.t("ajustes.gestor_plantillas.popup_renombrar_prompt", f"Nuevo nombre para '{viejo}':").replace("{viejo}", viejo)
+            nuevo = simpledialog.askstring(tit, prompt, initialvalue=viejo, parent=self.ventana)
             if nuevo and nuevo.strip().upper() != viejo:
                 nuevo = nuevo.strip().upper()
                 self.app.plantillas[nuevo] = self.app.plantillas.pop(viejo)
@@ -1239,9 +1273,14 @@ class VentanaConfiguracion:
 
         def eliminar():
             sel = self.listbox_plantillas.curselection()
-            if not sel: return
+            if not sel:
+                tit = self.t("ajustes.gestor_plantillas.popup_aviso_titulo", "Aviso")
+                msg = self.t("ajustes.gestor_plantillas.popup_eliminar_aviso", "Selecciona una plantilla de la lista para eliminar.")
+                return messagebox.showwarning(tit, msg, parent=self.ventana)
             nombre = self.listbox_plantillas.get(sel[0])
-            if messagebox.askyesno("Borrar", f"¿Borrar '{nombre}' y sus atajos?", parent=self.ventana):
+            tit = self.t("ajustes.gestor_plantillas.popup_borrar_titulo", "Borrar")
+            preg = self.t("ajustes.gestor_plantillas.popup_borrar_pregunta", f"¿Borrar '{nombre}' y sus atajos?").replace("{nombre}", nombre)
+            if messagebox.askyesno(tit, preg, parent=self.ventana):
                 del self.app.plantillas[nombre]
                 for ctx in self.app.gestos_app:
                     if nombre in self.app.gestos_app[ctx]:
@@ -1253,18 +1292,23 @@ class VentanaConfiguracion:
         def regrabar():
             sel = self.listbox_plantillas.curselection()
             if not sel:
-                return messagebox.showwarning("Aviso", "Selecciona una plantilla de la lista para regrabar.",
-                                              parent=self.ventana)
+                tit = self.t("ajustes.gestor_plantillas.popup_aviso_titulo", "Aviso")
+                msg = self.t("ajustes.gestor_plantillas.popup_regrabar_aviso", "Selecciona una plantilla de la lista para regrabar.")
+                return messagebox.showwarning(tit, msg, parent=self.ventana)
 
             nombre_viejo = self.listbox_plantillas.get(sel[0])
 
             # Lanzamos la grabadora pasándole el nombre de la plantilla seleccionada
             self.abrir_ventana_grabacion(nombre_predefinido=nombre_viejo)
 
-        tk.Button(frame_bot_plan, text="Regrabar 🔄", bg="#2196F3", fg="white", width=15, pady=5,
-                  command=regrabar).pack(pady=5)
+        self.btn_regrabar = tk.Button(frame_bot_plan, text=self.t("ajustes.gestor_plantillas.btn_regrabar", "Regrabar 🔄"), bg="#2196F3", fg="white", width=15, pady=5,
+                  command=regrabar)
+        self.btn_regrabar.pack(pady=5)
 
-        tk.Button(frame_bot_plan, text="Renombrar ✏️", bg="#FF9800", fg="white", width=15, pady=5,
-                  command=renombrar).pack(pady=5)
-        tk.Button(frame_bot_plan, text="Eliminar 🗑️", bg="#f44336", fg="white", width=15, pady=5,
-                  command=eliminar).pack(pady=5)
+        self.btn_renombrar = tk.Button(frame_bot_plan, text=self.t("ajustes.gestor_plantillas.btn_renombrar", "Renombrar ✏️"), bg="#FF9800", fg="white", width=15, pady=5,
+                  command=renombrar)
+        self.btn_renombrar.pack(pady=5)
+
+        self.btn_eliminar = tk.Button(frame_bot_plan, text=self.t("ajustes.gestor_plantillas.btn_eliminar", "Eliminar 🗑️"), bg="#f44336", fg="white", width=15, pady=5,
+                  command=eliminar)
+        self.btn_eliminar.pack(pady=5)

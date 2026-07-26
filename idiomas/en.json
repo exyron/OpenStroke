@@ -12,7 +12,7 @@
   },
   "acerca": {
     "titulo": "About OpenStroke",
-    "subtitulo": "Version 0.5 | Build: 2026.07.26",
+    "subtitulo": "Version 0.5.0.0.1 | Build: 2026.07.26",
     "descripcion": "Mouse & Keyboard United, Multi-input, Open Source",
     "sin_changelog": "File 'changelog.txt' not found."
   },
@@ -28,27 +28,78 @@
     "en_memoria": "⏬ In Memory"
   },
   "ajustes": {
-    "titulo": "OpenStroke Settings v0.5",
-    "idioma_label": "Interface Language:",
-    "guardar": "Save",
-    "cancelar": "Cancel",
+    "titulo": "OpenStroke Settings v0.5.0.0.1",
+    "idioma_label": "Select Language / Seleccionar Idioma:",
+    "btn_guardar_cerrar": "Save & Close",
+    "btn_cancelar": "Cancel",
+    "btn_aplicar": "Apply",
+    "btn_reset": "🔄 Reset",
+    "btn_grabar_forma": "✏️ Record Shape",
+    "app_activa": {
+      "label": "Active App:",
+      "global": "GLOBAL",
+      "excepciones": "EXCEPTIONS",
+      "sigilo": "STEALTH MODE"
+    },
+    "tabla": {
+      "col_forma": "Shape / Gesture",
+      "col_capa": "Key / Layer",
+      "col_comando": "Action / Command"
+    },
+    "gestor_plantillas": {
+      "subtitulo": "Manage geometric engine shapes.",
+      "btn_regrabar": "Re-record 🔄",
+      "btn_renombrar": "Rename ✏️",
+      "btn_eliminar": "Delete 🗑️",
+      "popup_renombrar_titulo": "Rename",
+      "popup_renombrar_prompt": "New name for '{viejo}':",
+      "popup_renombrar_aviso": "Select a template from the list to rename.",
+      "popup_borrar_titulo": "Delete",
+      "popup_borrar_pregunta": "Delete '{nombre}' and its shortcuts?",
+      "popup_eliminar_aviso": "Select a template from the list to delete.",
+      "popup_aviso_titulo": "Notice",
+      "popup_regrabar_aviso": "Select a template from the list to re-record."
+    },
     "pestanas": {
-      "preferencias": "Preferences",
-      "gestos": "Gestos & Shortcuts",
-      "apariencia": "Appearance",
-      "excepciones": "Exceptions"
+      "atajos": "🚀 Shortcuts & Config",
+      "plantillas": "📐 Template Manager",
+      "colores": "🎨 Colors",
+      "preferencias": "⚙️ Preferences"
     },
     "preferencias": {
-      "arranque": "Launch automatically with Windows",
-      "jedi": "Enable Jedi Powers (Title bar button tricks)",
-      "splash": "Show splash screen on startup",
-      "tiempo_cancelacion": "Max gesture timeout (seconds):",
-      "tolerancia": "Geometric recognition tolerance:"
+      "arranque": "Launch OpenStroke with Windows",
+      "jedi": "Jedi Powers (Manipulate windows with right click)",
+      "splash": "Show Splash Screen on startup",
+      "sector_idioma": "🌐 Language / Idioma",
+      "sector_apariencia": "🎨 Stroke Appearance",
+      "grosor": "Line Thickness:",
+      "borde": "High Contrast Outline (Border):",
+      "tolerancia": "Geometric Engine Tolerance:",
+      "tiempo_maximo": "Max Gesture Timeout (seconds):"
     },
-    "apariencia": {
-      "color_trazo": "Default stroke color:",
-      "grosor_trazo": "Stroke width:",
-      "borde_trazo": "High contrast outline (aura):"
+    "colores": {
+      "normal": "Normal Stroke",
+      "letras": "Letters (A-Z)",
+      "middle": "Middle Click",
+      "x1": "X1 Button",
+      "x2": "X2 Button",
+      "ctrl": "Ctrl Key",
+      "shift": "Shift Key",
+      "alt": "Alt Key",
+      "space": "Spacebar"
     }
+  },
+  "grabadora": {
+    "titulo": "Record New Shape",
+    "instrucciones": "Draw a SINGLE continuous line.\nUpon releasing mouse, playback loops recognition.",
+    "nombre": "Name:",
+    "btn_guardar": "💾 Save Shape",
+    "aviso_corto": "Stroke too short.",
+    "aviso_nombre": "Please enter a shape name.",
+    "aviso_trazo": "Please draw a stroke first."
+  },
+  "guia": {
+    "titulo": "📚 Command Guide",
+    "texto": "======================================================================\n                  OPENSTROKE COMMAND GUIDE\n======================================================================\n\n1. PROGRAMS & FILES (Default)\nType executable name or native file path.\n• notepad\n• calc\n• chrome.exe https://google.es\n• C:\\Windows\\System32\n\n2. KEYBOARD SHORTCUTS (Prefix \"teclas:\")\nSimulates physical key combination press on system.\n• teclas:ctrl,c            (Copy)\n• teclas:ctrl,v            (Paste)\n• teclas:shift,win,left    (Move window to left monitor)\n• teclas:f5                (Refresh page)\n\n    [ SPECIAL KEYS AVAILABLE ]\n    • Modifiers:    win, windows, ctrl, shift, alt\n    • Function:     f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12\n    • System:       enter, space, tab, esc\n    • Directional:  up, down, left, right\n\n3. NATIVE WINDOWS (Prefix \"ventana:\")\nManipulate desktop environment and active foreground window.\n• ventana:minimizar        (Minimizes active window and saves to memory)\n• ventana:maximizar        (Maximizes or restores active window)\n• ventana:restaurar_una    (Rescues last window minimized by OpenStroke)\n• ventana:cerrar           (Closes active window - Alt+F4)\n• ventana:fijar            (Pins window Always on Top)\n• ventana:transparente     (Applies 50% ghost transparency)\n• ventana:siguiente        (Fast jump to next window)\n• ventana:atras            (Reverse jump to previous window)\n• ventana:arriba           (Up one folder level / Backspace)\n• ventana:minimizar_todas  (Hides entire workspace)\n• ventana:restaurar_todas  (Restores all minimized windows)\n• ventana:escritorio       (Shows or hides desktop - Toggle)\n\n[ ADVANCED COMMAND GUIDE ]\n\n1. MACROS (Prefix \"macro:\")\nChains multiple actions separated by \"|\". \nExample: macro:https://gmail.com | esperar:2.0 | teclas:ctrl,t\n• esperar:X.X   (Pause in seconds)\n• teclas:X,Y    (Keyboard combinations)\n\n2. WINDOW MANAGEMENT (System shortcuts)\nYou can use prefix \"teclas:\" to move windows between monitors:\n• Move left:   teclas:win,shift,left\n• Move right:  teclas:win,shift,right\n• Maximize:    teclas:win,up\n• Minimize:    teclas:win,down\n\n======================================================================"
   }
 }
